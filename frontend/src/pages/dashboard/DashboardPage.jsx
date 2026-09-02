@@ -1,63 +1,20 @@
-import { LayoutDashboard, TrendingUp, FileCheck, AlertTriangle, Zap, Activity } from 'lucide-react'
-import { Card } from '../../components/ui/Card'
-import { Badge, StatusBadge, RiskBadge } from '../../components/ui/Badge'
-import { Button } from '../../components/ui/Button'
+import { useState, useEffect } from 'react'
+import { LayoutDashboard, TrendingUp, FileCheck, AlertTriangle, Zap, Activity, ArrowUpRight } from 'lucide-react'
+import { StatusBadge } from '../../components/ui/Badge'
 import { Link } from 'react-router-dom'
+import { useAuthStore } from '../../store/authStore'
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, Legend
 } from 'recharts'
-import {
-  DASHBOARD_STATS, RECENT_ACTIVITY, MONTHLY_BIDS_CHART, RISK_DISTRIBUTION, OFFICER
-} from '../../data/dummyData'
-
-const KPI_CARDS = [
-  {
-    label: 'Total Bids',
-    value: DASHBOARD_STATS.totalBids,
-    icon: FileCheck,
-    color: 'text-gem-blue-light',
-    bg: 'bg-gem-blue/10',
-    trend: '+12 this month',
-    trendUp: true,
-  },
-  {
-    label: 'Pending Verification',
-    value: DASHBOARD_STATS.pendingVerification,
-    icon: Activity,
-    color: 'text-gem-amber',
-    bg: 'bg-gem-amber/10',
-    trend: '3 added today',
-    trendUp: false,
-  },
-  {
-    label: 'Verified Bids',
-    value: DASHBOARD_STATS.verifiedBids,
-    icon: FileCheck,
-    color: 'text-gem-green-light',
-    bg: 'bg-gem-green/10',
-    trend: `${DASHBOARD_STATS.complianceRate}% compliance rate`,
-    trendUp: true,
-  },
-  {
-    label: 'High Risk Bids',
-    value: DASHBOARD_STATS.highRiskBids,
-    icon: AlertTriangle,
-    color: 'text-gem-red',
-    bg: 'bg-gem-red/10',
-    trend: '2 fraud alerts',
-    trendUp: false,
-  },
-]
-
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null
   return (
-    <div className="glass-card p-3 text-xs font-body">
-      <p className="text-gem-muted mb-1.5 font-semibold">{label}</p>
+    <div className="bg-white border border-gray-200 p-3 rounded shadow-md text-xs font-body">
+      <p className="text-gray-600 mb-1.5 font-bold">{label}</p>
       {payload.map(p => (
         <p key={p.name} style={{ color: p.color }} className="flex justify-between gap-4">
-          <span>{p.name}</span>
+          <span className="capitalize">{p.name}</span>
           <span className="font-semibold">{p.value}</span>
         </p>
       ))}
@@ -66,20 +23,101 @@ const CustomTooltip = ({ active, payload, label }) => {
 }
 
 export default function DashboardPage() {
+  const { user } = useAuthStore()
+  const [bids, setBids] = useState([])
+  const [dashboardData, setDashboardData] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [bidsRes, dashRes] = await Promise.all([
+          fetch('http://localhost:8000/api/v1/bids/'),
+          fetch('http://localhost:8000/api/v1/dashboard/')
+        ])
+        
+        const bidsData = await bidsRes.json()
+        const dashData = await dashRes.json()
+        
+        if (bidsData.status === 'success') {
+          setBids(bidsData.data)
+        }
+        if (dashData.status === 'success') {
+          setDashboardData(dashData.data)
+        }
+      } catch (err) {
+        console.error("Failed to fetch dashboard data:", err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    fetchData()
+  }, [])
+
+  // Dynamic KPIs
+  const totalBids = bids.length
+  const pendingBids = bids.filter(b => b.status === 'processing').length
+  const verifiedBids = bids.filter(b => b.status === 'verified').length
+  const highRiskBids = bids.filter(b => b.riskScore > 50).length
+
+  const avgCompliance = totalBids > 0 
+    ? Math.round(bids.reduce((acc, curr) => acc + (curr.complianceScore || 0), 0) / totalBids) 
+    : 0
+
+  const KPI_CARDS = [
+    {
+      label: 'Total Bids',
+      value: totalBids,
+      icon: FileCheck,
+      color: 'text-[#003c8f]',
+      bg: 'bg-[#e3f2fd]',
+      trend: '+12 this month',
+      trendUp: true,
+    },
+    {
+      label: 'Pending Verification',
+      value: pendingBids,
+      icon: Activity,
+      color: 'text-amber-600',
+      bg: 'bg-amber-100',
+      trend: `${pendingBids} currently processing`,
+      trendUp: false,
+    },
+    {
+      label: 'Verified Bids',
+      value: verifiedBids,
+      icon: FileCheck,
+      color: 'text-green-600',
+      bg: 'bg-green-100',
+      trend: `${avgCompliance}% avg compliance rate`,
+      trendUp: true,
+    },
+    {
+      label: 'High Risk Bids',
+      value: highRiskBids,
+      icon: AlertTriangle,
+      color: 'text-red-600',
+      bg: 'bg-red-100',
+      trend: 'Requires manual review',
+      trendUp: false,
+    },
+  ]
+
   return (
-    <div className="p-6 lg:p-8 space-y-6 animate-fade-in">
+    <div className="animate-fade-in w-full space-y-8">
       {/* Page header */}
-      <div className="flex items-start justify-between flex-wrap gap-4">
+      <div className="flex items-start justify-between flex-wrap gap-4 border-b border-gray-200 pb-4">
         <div>
-          <h1 className="font-display font-bold text-2xl text-gem-white">Dashboard</h1>
-          <p className="text-gem-muted font-body text-sm mt-1">
-            Welcome back, {OFFICER.name} · {OFFICER.department}
+          <h1 className="font-display font-bold text-2xl text-gray-900 tracking-tight m-0">Dashboard Overview</h1>
+          <p className="text-gray-600 font-body text-sm mt-1 m-0">
+            Welcome back, {user?.name || 'Officer'} · {user?.department || 'Department'}
           </p>
         </div>
         <Link to="/upload">
-          <Button variant="primary" size="md" icon={Zap}>
-            New Verification
-          </Button>
+          <button className="bg-[#003c8f] hover:bg-[#002b66] text-white px-5 py-2.5 rounded text-sm font-semibold flex items-center gap-2 transition-colors">
+            <Zap size={16} /> New Verification
+          </button>
         </Link>
       </div>
 
@@ -88,16 +126,25 @@ export default function DashboardPage() {
         {KPI_CARDS.map((card) => {
           const Icon = card.icon
           return (
-            <div key={card.label} className="glass-card-hover p-5">
+            <div 
+              key={card.label} 
+              className="bg-white border border-gray-200 rounded p-6 shadow-sm hover:shadow-md transition-shadow"
+            >
               <div className="flex items-start justify-between mb-4">
-                <div className={`w-10 h-10 rounded-xl ${card.bg} flex items-center justify-center`}>
-                  <Icon size={18} className={card.color} />
+                <div className={`w-12 h-12 rounded flex items-center justify-center ${card.bg}`}>
+                  <Icon size={20} className={card.color} />
                 </div>
-                <TrendingUp size={14} className={card.trendUp ? 'text-gem-green-light' : 'text-gem-red'} />
+                {card.trendUp ? (
+                  <ArrowUpRight size={18} className="text-green-600" />
+                ) : (
+                  <ArrowUpRight size={18} className="text-amber-500 rotate-90" />
+                )}
               </div>
-              <div className="font-display font-bold text-3xl text-gem-white mb-1">{card.value}</div>
-              <div className="text-sm text-gem-muted font-body">{card.label}</div>
-              <div className={`text-xs mt-2 font-body ${card.trendUp ? 'text-gem-green-light' : 'text-gem-amber'}`}>
+              <div className="font-display font-bold text-3xl text-gray-900 mb-1">
+                {loading ? '...' : card.value}
+              </div>
+              <div className="text-sm text-gray-600 font-body mb-2">{card.label}</div>
+              <div className={`text-xs font-body font-medium ${card.trendUp ? 'text-green-600' : 'text-amber-600'}`}>
                 {card.trend}
               </div>
             </div>
@@ -106,66 +153,68 @@ export default function DashboardPage() {
       </div>
 
       {/* Charts row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Area chart — monthly bids */}
-        <div className="glass-card p-5 col-span-2">
-          <div className="flex items-center justify-between mb-5">
+        <div className="bg-white border border-gray-200 rounded p-6 shadow-sm col-span-2">
+          <div className="flex items-center justify-between mb-6">
             <div>
-              <h3 className="font-display font-semibold text-gem-white text-base">Monthly Bid Activity</h3>
-              <p className="text-xs text-gem-muted font-body mt-0.5">Verified vs Failed vs Pending</p>
+              <h3 className="font-display font-bold text-gray-900 text-lg m-0">Activity Overview</h3>
+              <p className="text-sm text-gray-500 mt-1 m-0">Verified vs Failed vs Pending (Mock Data for Chart)</p>
             </div>
-            <Badge variant="info" label="Last 6 months" />
+            <div className="px-3 py-1 text-xs font-medium bg-gray-100 border border-gray-200 rounded-full text-gray-600">
+              Last 6 months
+            </div>
           </div>
-          <ResponsiveContainer width="100%" height={200}>
-            <AreaChart data={MONTHLY_BIDS_CHART} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
+          <ResponsiveContainer width="100%" height={260}>
+            <AreaChart data={dashboardData?.monthlyChart || []} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
               <defs>
                 <linearGradient id="gradVerified" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#0D9F6F" stopOpacity={0.3} />
-                  <stop offset="100%" stopColor="#0D9F6F" stopOpacity={0} />
+                  <stop offset="0%" stopColor="#138808" stopOpacity={0.2} />
+                  <stop offset="100%" stopColor="#138808" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="gradFailed" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#EF4444" stopOpacity={0.3} />
-                  <stop offset="100%" stopColor="#EF4444" stopOpacity={0} />
+                  <stop offset="0%" stopColor="#dc3545" stopOpacity={0.2} />
+                  <stop offset="100%" stopColor="#dc3545" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-              <XAxis dataKey="month" tick={{ fill: '#64748B', fontSize: 11, fontFamily: 'Inter' }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fill: '#64748B', fontSize: 11, fontFamily: 'Inter' }} axisLine={false} tickLine={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" vertical={false} />
+              <XAxis dataKey="month" tick={{ fill: '#4b5563', fontSize: 12 }} axisLine={false} tickLine={false} dy={10} />
+              <YAxis tick={{ fill: '#4b5563', fontSize: 12 }} axisLine={false} tickLine={false} dx={-10} />
               <Tooltip content={<CustomTooltip />} />
-              <Legend wrapperStyle={{ fontSize: '11px', fontFamily: 'Inter', color: '#64748B' }} />
-              <Area type="monotone" dataKey="verified" stroke="#0D9F6F" fill="url(#gradVerified)" strokeWidth={2} dot={false} />
-              <Area type="monotone" dataKey="failed" stroke="#EF4444" fill="url(#gradFailed)" strokeWidth={2} dot={false} />
-              <Area type="monotone" dataKey="pending" stroke="#F59E0B" fill="none" strokeWidth={1.5} strokeDasharray="4 4" dot={false} />
+              <Legend wrapperStyle={{ fontSize: '12px', paddingTop: '20px', color: '#4b5563' }} iconType="circle" />
+              <Area type="monotone" dataKey="verified" stroke="#138808" fill="url(#gradVerified)" strokeWidth={2} dot={{ r: 3, fill: '#138808', strokeWidth: 0 }} activeDot={{ r: 5 }} />
+              <Area type="monotone" dataKey="failed" stroke="#dc3545" fill="url(#gradFailed)" strokeWidth={2} dot={{ r: 3, fill: '#dc3545', strokeWidth: 0 }} activeDot={{ r: 5 }} />
+              <Area type="monotone" dataKey="pending" stroke="#f59e0b" fill="none" strokeWidth={2} strokeDasharray="4 4" dot={false} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
 
         {/* Risk distribution bar */}
-        <div className="glass-card p-5">
-          <div className="mb-5">
-            <h3 className="font-display font-semibold text-gem-white text-base">Risk Distribution</h3>
-            <p className="text-xs text-gem-muted font-body mt-0.5">Current active bids</p>
+        <div className="bg-white border border-gray-200 rounded p-6 shadow-sm">
+          <div className="mb-6">
+            <h3 className="font-display font-bold text-gray-900 text-lg m-0">Risk Distribution</h3>
+            <p className="text-sm text-gray-500 mt-1 m-0">Current active bids (Mock Data)</p>
           </div>
           <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={RISK_DISTRIBUTION} layout="vertical" margin={{ top: 0, right: 10, left: 10, bottom: 0 }}>
-              <XAxis type="number" tick={{ fill: '#64748B', fontSize: 10 }} axisLine={false} tickLine={false} />
-              <YAxis type="category" dataKey="label" tick={{ fill: '#64748B', fontSize: 10, fontFamily: 'Inter' }} axisLine={false} tickLine={false} width={70} />
-              <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="count" radius={[0, 6, 6, 0]}>
-                {RISK_DISTRIBUTION.map((entry, i) => (
+            <BarChart data={dashboardData?.riskDistribution || []} layout="vertical" margin={{ top: 0, right: 10, left: 10, bottom: 0 }}>
+              <XAxis type="number" hide />
+              <YAxis type="category" dataKey="label" tick={{ fill: '#4b5563', fontSize: 12 }} axisLine={false} tickLine={false} width={80} />
+              <Tooltip content={<CustomTooltip />} cursor={{ fill: '#f3f4f6' }} />
+              <Bar dataKey="count" radius={[0, 4, 4, 0]} barSize={24}>
+                {(dashboardData?.riskDistribution || []).map((entry, i) => (
                   <rect key={i} fill={entry.color} />
                 ))}
               </Bar>
             </BarChart>
           </ResponsiveContainer>
-          <div className="space-y-2 mt-4">
-            {RISK_DISTRIBUTION.map((d) => (
-              <div key={d.label} className="flex items-center justify-between text-xs font-body">
-                <div className="flex items-center gap-2">
-                  <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: d.color }} />
-                  <span className="text-gem-muted">{d.label}</span>
+          <div className="space-y-3 mt-6">
+            {(dashboardData?.riskDistribution || []).map((d) => (
+              <div key={d.label} className="flex items-center justify-between text-sm">
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 rounded" style={{ backgroundColor: d.color }} />
+                  <span className="text-gray-700">{d.label}</span>
                 </div>
-                <span className="text-gem-white font-semibold">{d.count}</span>
+                <span className="text-gray-900 font-bold">{d.count}</span>
               </div>
             ))}
           </div>
@@ -173,36 +222,47 @@ export default function DashboardPage() {
       </div>
 
       {/* Recent activity */}
-      <div className="glass-card">
-        <div className="px-6 py-4 border-b border-white/6 flex items-center justify-between">
-          <h3 className="font-display font-semibold text-gem-white">Recent Activity</h3>
-          <Link to="/history">
-            <Button variant="ghost" size="sm">View all</Button>
+      <div className="bg-white border border-gray-200 rounded overflow-hidden shadow-sm">
+        <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-gray-50">
+          <h3 className="font-display font-bold text-gray-900 text-lg m-0">Recent Activity</h3>
+          <Link to="/history" className="text-sm text-[#003c8f] hover:underline font-semibold">
+            View all
           </Link>
         </div>
-        <div className="divide-y divide-white/4">
-          {RECENT_ACTIVITY.map((item) => (
-            <div key={item.id} className="px-6 py-4 flex items-center gap-4 hover:bg-white/3 transition-colors">
-              <div className={`status-dot flex-shrink-0 ${
-                item.status === 'verified' ? 'status-dot-green' :
-                item.status === 'failed' ? 'status-dot-red' : 'status-dot-blue'
-              } animate-pulse-dot`} />
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-gem-white font-body truncate">{item.bidder}</p>
-                <p className="text-xs text-gem-muted font-body">
-                  {item.action} · <span className="font-mono">{item.tender}</span>
-                </p>
-              </div>
-              {item.score !== null && (
-                <div className="hidden sm:block text-right">
-                  <div className="text-sm font-bold font-display text-gem-white">{item.score}</div>
-                  <div className="text-[10px] text-gem-muted font-body">score</div>
+        <div className="divide-y divide-gray-100">
+          {loading ? (
+            <div className="px-6 py-8 text-center text-gray-500">Loading recent bids...</div>
+          ) : bids.length === 0 ? (
+             <div className="px-6 py-8 text-center text-gray-500">No recent bids found.</div>
+          ) : (
+            bids.slice(0, 5).map((item) => (
+              <div 
+                key={item.id} 
+                className="px-6 py-4 flex items-center gap-5 hover:bg-gray-50 transition-colors cursor-pointer"
+              >
+                <div className={`w-3 h-3 rounded-full flex-shrink-0 ${
+                  item.status === 'verified' ? 'bg-[#138808]' :
+                  item.status === 'failed' ? 'bg-red-500' : 'bg-amber-400'
+                }`} />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-gray-900 truncate">{item.bidderName}</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Compliance Score: {item.complianceScore} · <span className="font-mono text-gray-600">{item.tenderId}</span>
+                  </p>
                 </div>
-              )}
-              <StatusBadge status={item.status} />
-              <span className="text-xs text-gem-muted font-body whitespace-nowrap hidden md:block">{item.time}</span>
-            </div>
-          ))}
+                <div className="hidden sm:block text-right">
+                  <div className="text-sm font-bold font-mono text-gray-900">{item.riskScore}</div>
+                  <div className="text-[10px] uppercase tracking-wider text-gray-500">Risk Score</div>
+                </div>
+                <div className="hidden md:block">
+                  <StatusBadge status={item.status} />
+                </div>
+                <span className="text-xs text-gray-500 whitespace-nowrap hidden lg:block w-24 text-right">
+                  {new Date(item.createdAt).toLocaleDateString()}
+                </span>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>

@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+pydantic
+celery
+redis
+SQLAlchemy
+psycopg2-binary
+pytest
+python-multipart
+networkx
+google-generativeai
+python-dotenv

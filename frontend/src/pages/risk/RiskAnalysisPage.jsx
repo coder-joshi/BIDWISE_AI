@@ -1,10 +1,11 @@
-import { BIDDERS } from '../../data/dummyData'
+import { useState, useEffect } from 'react'
+import { ShieldAlert, Activity, AlertTriangle, ShieldCheck, PieChart, Info } from 'lucide-react'
 
 function RiskGauge({ score }) {
   const angle = (score / 100) * 180 - 90
-  const color = score <= 30 ? '#0D9F6F' : score <= 60 ? '#F59E0B' : '#EF4444'
+  const color = score <= 30 ? '#138808' : score <= 60 ? '#f59e0b' : '#dc3545'
   const label = score <= 30 ? 'Low Risk' : score <= 60 ? 'Medium Risk' : 'High Risk'
-  const r = 70, cx = 100, cy = 90
+  const r = 100, cx = 150, cy = 130
   const start = { x: cx - r, y: cy }
   const end   = { x: cx + r, y: cy }
   const needleX = cx + r * 0.75 * Math.cos((angle * Math.PI) / 180)
@@ -12,71 +13,132 @@ function RiskGauge({ score }) {
 
   return (
     <div className="flex flex-col items-center">
-      <svg width="200" height="120" viewBox="0 0 200 120">
+      <svg width="300" height="160" viewBox="0 0 300 160">
         <defs>
           <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%"   stopColor="#0D9F6F" />
-            <stop offset="50%"  stopColor="#F59E0B" />
-            <stop offset="100%" stopColor="#EF4444" />
+            <stop offset="0%"   stopColor="#138808" />
+            <stop offset="50%"  stopColor="#f59e0b" />
+            <stop offset="100%" stopColor="#dc3545" />
           </linearGradient>
         </defs>
         {/* Track */}
-        <path d={`M ${cx-r} ${cy} A ${r} ${r} 0 0 1 ${cx+r} ${cy}`} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="12" strokeLinecap="round" />
+        <path d={`M ${cx-r} ${cy} A ${r} ${r} 0 0 1 ${cx+r} ${cy}`} fill="none" stroke="#e5e7eb" strokeWidth="16" strokeLinecap="round" />
         {/* Fill */}
-        <path d={`M ${cx-r} ${cy} A ${r} ${r} 0 0 1 ${cx+r} ${cy}`} fill="none" stroke="url(#gaugeGrad)" strokeWidth="12" strokeLinecap="round" opacity="0.9" />
+        <path d={`M ${cx-r} ${cy} A ${r} ${r} 0 0 1 ${cx+r} ${cy}`} fill="none" stroke="url(#gaugeGrad)" strokeWidth="16" strokeLinecap="round" />
         {/* Needle */}
-        <line x1={cx} y1={cy} x2={needleX} y2={needleY} stroke="white" strokeWidth="2.5" strokeLinecap="round" />
-        <circle cx={cx} cy={cy} r="5" fill="white" />
+        <line x1={cx} y1={cy} x2={needleX} y2={needleY} stroke="#374151" strokeWidth="3" strokeLinecap="round" />
+        <circle cx={cx} cy={cy} r="6" fill="#374151" />
         {/* Labels */}
-        <text x="28" y={cy+18} fill="#0D9F6F" fontSize="10" fontFamily="Inter">Low</text>
-        <text x="90" y="22"    fill="#F59E0B" fontSize="10" fontFamily="Inter" textAnchor="middle">Mid</text>
-        <text x="162" y={cy+18} fill="#EF4444" fontSize="10" fontFamily="Inter">High</text>
+        <text x="35" y={cy+25} fill="#138808" fontSize="12" fontFamily="Inter" fontWeight="600">Low</text>
+        <text x="150" y="20"    fill="#f59e0b" fontSize="12" fontFamily="Inter" fontWeight="600" textAnchor="middle">Mid</text>
+        <text x="265" y={cy+25} fill="#dc3545" fontSize="12" fontFamily="Inter" fontWeight="600" textAnchor="end">High</text>
       </svg>
-      <div className="text-center -mt-2">
-        <div className="font-display font-bold text-5xl" style={{ color }}>{score}</div>
-        <div className="text-sm font-semibold mt-1 font-body" style={{ color }}>{label}</div>
+      <div className="text-center -mt-4">
+        <div className="font-display font-bold text-6xl drop-shadow-sm" style={{ color }}>{score}</div>
+        <div className="text-sm font-bold mt-1 font-body uppercase tracking-widest" style={{ color }}>{label}</div>
       </div>
     </div>
   )
 }
 
 const RISK_FACTORS = [
-  { factor: 'Document Authenticity',   weight: 30, score: 9,  note: 'All documents appear genuine. No tampering detected.' },
-  { factor: 'GST Compliance',          weight: 20, score: 4,  note: 'GST active, returns filed, no outstanding dues.' },
-  { factor: 'Financial Stability',     weight: 20, score: 5,  note: 'Turnover ₹28.4 Cr meets threshold. Solvency verified.' },
-  { factor: 'Experience Match',        weight: 15, score: 3,  note: 'Railway project experience confirmed for 12 years.' },
-  { factor: 'Regulatory Compliance',   weight: 10, score: 2,  note: 'EPFO, ESIC filings current. No violations found.' },
-  { factor: 'DigiLocker Verification', weight: 5,  score: 0,  note: 'PAN–Aadhaar link unconfirmed. Minor risk.' },
+  { factor: 'Document Authenticity',   weight: 30, score: 9,  note: 'All documents appear genuine. No tampering detected.', icon: ShieldCheck, color: 'text-[#138808]', bg: 'bg-[#d4edda]' },
+  { factor: 'GST Compliance',          weight: 20, score: 4,  note: 'GST active, returns filed, no outstanding dues.', icon: Activity, color: 'text-[#138808]', bg: 'bg-[#d4edda]' },
+  { factor: 'Financial Stability',     weight: 20, score: 5,  note: 'Turnover ₹28.4 Cr meets threshold. Solvency verified.', icon: PieChart, color: 'text-[#138808]', bg: 'bg-[#d4edda]' },
+  { factor: 'Experience Match',        weight: 15, score: 3,  note: 'Railway project experience confirmed for 12 years.', icon: ShieldCheck, color: 'text-[#138808]', bg: 'bg-[#d4edda]' },
+  { factor: 'Regulatory Compliance',   weight: 10, score: 2,  note: 'EPFO, ESIC filings current. No violations found.', icon: ShieldCheck, color: 'text-[#138808]', bg: 'bg-[#d4edda]' },
+  { factor: 'DigiLocker Verification', weight: 5,  score: 0,  note: 'PAN–Aadhaar link unconfirmed. Minor risk.', icon: AlertTriangle, color: 'text-[#ffc107]', bg: 'bg-[#fff3cd]' },
 ]
 
 export default function RiskAnalysisPage() {
-  const bidder = BIDDERS.A
+  const [bidder, setBidder] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetch('http://localhost:8000/api/v1/bids/BID-2026-0841')
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'success') {
+          setBidder(data.data)
+        }
+      })
+      .catch(err => console.error("Failed to fetch bid details:", err))
+      .finally(() => setLoading(false))
+  }, [])
+
+  if (loading) return <div className="p-10 text-center text-gray-500">Loading risk data...</div>
+  if (!bidder) return <div className="p-10 text-center text-red-500">Failed to load bidder data</div>
+
   return (
-    <div className="p-6 lg:p-8 animate-fade-in">
-      <div className="mb-8">
-        <h1 className="font-display font-bold text-2xl text-gem-white">Risk Analysis</h1>
-        <p className="text-gem-muted font-body text-sm mt-1">{bidder.name}</p>
+    <div className="animate-fade-in w-full space-y-6">
+      {/* Header */}
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center border-b border-gray-200 pb-4 gap-4">
+        <div>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-[#fff3cd] text-[#856404] text-xs font-bold mb-2 uppercase tracking-wide">
+            <ShieldAlert size={14} /> Risk Assessment
+          </div>
+          <h1 className="font-display font-bold text-2xl text-gray-900 tracking-tight m-0">AI Risk Analysis</h1>
+          <p className="text-gray-600 font-body text-sm mt-1 m-0">
+            Comprehensive multi-factor risk profiling for <span className="font-bold text-gray-900">{bidder.bidderName}</span>
+          </p>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <div className="glass-card p-8 flex items-center justify-center">
-          <RiskGauge score={bidder.riskScore} />
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className="xl:col-span-1 space-y-6">
+          <div className="bg-white border border-gray-200 rounded p-8 flex flex-col items-center justify-center min-h-[320px] shadow-sm">
+            <RiskGauge score={bidder.riskScore || 23} />
+            <p className="text-xs text-gray-500 font-body mt-8 text-center max-w-xs leading-relaxed m-0">
+              Score is calculated based on 40+ signals including document forensics, financial data, and identity checks.
+            </p>
+          </div>
+
+          <div className="bg-white border border-gray-200 rounded p-6 shadow-sm">
+            <h3 className="font-display font-bold text-gray-900 mb-4 m-0 flex items-center gap-2">
+              <Info size={18} className="text-[#003c8f]" /> AI Recommendation
+            </h3>
+            <div className="p-4 rounded bg-[#d4edda] border border-[#c3e6cb]">
+              <p className="text-sm text-[#155724] font-body font-bold leading-relaxed m-0">
+                Bidder poses a low systemic risk. All major compliance constraints are satisfied with high confidence. Recommended for technical qualification.
+              </p>
+            </div>
+          </div>
         </div>
 
-        <div className="glass-card p-6 space-y-4">
-          <h3 className="font-display font-semibold text-gem-white">Risk Factor Breakdown</h3>
-          {RISK_FACTORS.map((f) => (
-            <div key={f.factor}>
-              <div className="flex justify-between text-xs font-body mb-1">
-                <span className="text-gem-muted">{f.factor} <span className="text-gem-muted/50">({f.weight}%)</span></span>
-                <span className="text-gem-white font-semibold">{f.score}/{f.weight}</span>
-              </div>
-              <div className="h-1.5 bg-white/8 rounded-full overflow-hidden">
-                <div className="h-full bg-gem-green-light rounded-full" style={{ width: `${(f.score / f.weight) * 100}%` }} />
-              </div>
-              <p className="text-[10px] text-gem-muted font-body mt-1">{f.note}</p>
+        <div className="xl:col-span-2">
+          <div className="bg-white border border-gray-200 rounded p-6 lg:p-8 shadow-sm">
+            <h3 className="font-display font-bold text-lg text-gray-900 mb-6 m-0">Risk Factor Breakdown</h3>
+            <div className="space-y-6">
+              {RISK_FACTORS.map((f, i) => {
+                const percentage = (f.score / f.weight) * 100
+                return (
+                  <div key={f.factor} className="group">
+                    <div className="flex items-start gap-4">
+                      <div className={`w-10 h-10 rounded ${f.bg} flex items-center justify-center flex-shrink-0 border border-gray-200`}>
+                        <f.icon size={18} className={f.color} />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex justify-between items-end mb-1">
+                          <div>
+                            <h4 className="text-sm font-bold text-gray-900 font-body m-0">{f.factor}</h4>
+                            <span className="text-[10px] uppercase tracking-widest text-gray-500 font-bold m-0">Weight: {f.weight}%</span>
+                          </div>
+                          <span className={`text-lg font-display font-bold m-0 ${f.color}`}>{f.score}<span className="text-xs text-gray-400 font-body">/{f.weight}</span></span>
+                        </div>
+                        <div className="h-2 bg-gray-200 rounded-full overflow-hidden mb-1">
+                          <div 
+                            className={`h-full rounded-full transition-all duration-1000 ease-out`}
+                            style={{ width: `${percentage}%`, backgroundColor: f.color.replace('text-[', '').replace(']', '') }} 
+                          />
+                        </div>
+                        <p className="text-xs text-gray-600 font-body m-0 mt-1">{f.note}</p>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
             </div>
-          ))}
+          </div>
         </div>
       </div>
     </div>

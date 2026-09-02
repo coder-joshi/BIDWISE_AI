@@ -26,6 +26,8 @@ import AuditReportPage from '../pages/report/AuditReportPage'
 import VerificationHistoryPage from '../pages/history/VerificationHistoryPage'
 import AdminPanelPage from '../pages/admin/AdminPanelPage'
 import AiAssistantPage from '../pages/chat/AiAssistantPage'
+import ProfilePage from '../pages/profile/ProfilePage'
+import SettingsPage from '../pages/settings/SettingsPage'
 
 // Private route guard
 function PrivateRoute({ children }) {
@@ -61,6 +63,8 @@ const router = createBrowserRouter([
       { path: 'history',      element: <VerificationHistoryPage /> },
       { path: 'admin',        element: <AdminPanelPage /> },
       { path: 'ai-assistant', element: <AiAssistantPage /> },
+      { path: 'profile',      element: <ProfilePage /> },
+      { path: 'settings',     element: <SettingsPage /> },
     ],
   },
 ])

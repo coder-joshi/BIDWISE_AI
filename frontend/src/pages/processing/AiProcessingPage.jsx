@@ -1,108 +1,159 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { CheckCircle2, Loader2, Clock, FileText, Globe, ShieldCheck, Brain, BarChart3, FileOutput } from 'lucide-react'
-import { Button } from '../../components/ui/Button'
-import { BIDDERS } from '../../data/dummyData'
+import { useUIStore } from '../../store/uiStore'
 
 const STEPS = [
-  { id: 1, label: 'Reading Documents',        desc: 'Parsing PDF/DOCX structure and extracting text layers', icon: FileText,    duration: 1500 },
-  { id: 2, label: 'OCR Processing',           desc: 'Optical character recognition on scanned certificates', icon: FileText,    duration: 2000 },
-  { id: 3, label: 'Extracting Certificates',  desc: 'Identifying GST, PAN, Udyam, ISO, and other documents', icon: ShieldCheck, duration: 2000 },
-  { id: 4, label: 'Government Verification',  desc: 'Cross-checking GSTN, MCA21, Udyam, EPFO, ESIC portals', icon: Globe,       duration: 3000 },
-  { id: 5, label: 'AI Tender Analysis',       desc: 'Comparing extracted data against tender requirements',    icon: Brain,       duration: 2500 },
-  { id: 6, label: 'Risk Calculation',         desc: 'Computing multi-factor risk score across 40+ signals',   icon: BarChart3,   duration: 2000 },
-  { id: 7, label: 'Generating Report',        desc: 'Compiling audit-ready verification report',              icon: FileOutput,  duration: 1500 },
+  { id: 'extract', label: 'Document Extraction', desc: 'Running OCR on uploaded PDFs to extract text and tables', icon: FileText, duration: 2500 },
+  { id: 'verify', label: 'Government API Verification', desc: 'Cross-checking GST, PAN, and MCA databases', icon: Globe, duration: 3000 },
+  { id: 'compliance', label: 'Tender Compliance Check', desc: 'Evaluating extracted data against GeM tender requirements', icon: ShieldCheck, duration: 2000 },
+  { id: 'fraud', label: 'Fraud Detection Models', desc: 'Analyzing metadata, signatures, and anomaly detection', icon: Brain, duration: 3500 },
+  { id: 'risk', label: 'Risk Scoring', desc: 'Calculating unified risk profile and compliance score', icon: BarChart3, duration: 1500 },
+  { id: 'report', label: 'Generating Audit Report', desc: 'Compiling final tamper-proof verification report', icon: FileOutput, duration: 2000 },
 ]
 
 export default function AiProcessingPage() {
   const navigate = useNavigate()
+  const location = useLocation()
+  const { processingState, setProcessingState } = useUIStore()
+  
   const [currentStep, setCurrentStep] = useState(0)
   const [completed, setCompleted] = useState(false)
-  const bidder = BIDDERS.A
+  const [failed, setFailed] = useState(false)
+  const [errorMsg, setErrorMsg] = useState('')
+  
+  // Use the uploaded file name if available, else fallback
+  const uploadedFiles = location.state?.uploadedFiles || []
+  const bidderName = uploadedFiles.length > 0 ? uploadedFiles[0].replace('.pdf', '').replace('.docx', '') : 'Unknown Bidder'
+  
+  const hasInvalidFormat = uploadedFiles.some(f => f.toLowerCase().endsWith('.ppt') || f.toLowerCase().endsWith('.pptx'))
 
   useEffect(() => {
-    let idx = 0
-    const runStep = () => {
-      if (idx >= STEPS.length) { setCompleted(true); return }
-      setCurrentStep(idx)
-      setTimeout(() => { idx++; runStep() }, STEPS[idx]?.duration || 1500)
+    // Short circuit if already processed
+    if (processingState === 'completed') {
+      setCompleted(true)
+      setCurrentStep(STEPS.length)
+      return
     }
-    const t = setTimeout(runStep, 300)
-    return () => clearTimeout(t)
-  }, [])
+    if (processingState === 'failed') {
+      setFailed(true)
+      setErrorMsg(`Verification failed: Expected PDF/DOCX containing valid certificates. Received unsupported format (.ppt).`)
+      return
+    }
 
-  const progress = completed ? 100 : Math.round((currentStep / STEPS.length) * 100)
+    let idx = 0
+    let timeoutId
+    const runStep = () => {
+      if (idx === 2 && hasInvalidFormat) {
+        setFailed(true)
+        const errMsg = `Verification failed: Expected PDF/DOCX containing valid certificates. Received unsupported format (.ppt).`
+        setErrorMsg(errMsg)
+        setProcessingState('failed', errMsg)
+        return
+      }
+
+      if (idx >= STEPS.length) { 
+        setCompleted(true)
+        setProcessingState('completed')
+        
+        // Auto-navigate to history on completion after a brief pause
+        setTimeout(() => {
+          navigate('/history')
+        }, 1500)
+        
+        return 
+      }
+      
+      setCurrentStep(idx)
+      timeoutId = setTimeout(() => { idx++; runStep() }, STEPS[idx]?.duration || 1500)
+    }
+    
+    setProcessingState('processing')
+    timeoutId = setTimeout(runStep, 300)
+    return () => clearTimeout(timeoutId)
+  }, [hasInvalidFormat, setProcessingState, processingState, navigate])
+
+  const progress = failed ? Math.round((2 / STEPS.length) * 100) : completed ? 100 : Math.round((currentStep / STEPS.length) * 100)
 
   return (
-    <div className="p-6 lg:p-8 max-w-2xl animate-fade-in">
-      <div className="mb-8">
-        <h1 className="font-display font-bold text-2xl text-gem-white">AI Processing</h1>
-        <p className="text-gem-muted font-body text-sm mt-1">
-          Verifying bid from <span className="text-gem-white font-semibold">{bidder.name}</span>
+    <div className="p-6 lg:p-8 max-w-2xl mx-auto animate-fade-in">
+      <div className="mb-8 text-center">
+        <h1 className="font-display font-bold text-2xl text-[#212529]">AI Verification Pipeline</h1>
+        <p className="text-[#6c757d] font-body text-sm mt-1">
+          Processing bid from <span className="text-[#212529] font-bold">{bidderName}</span>
         </p>
       </div>
 
       {/* Progress bar */}
-      <div className="glass-card p-6 mb-5 beam-container">
+      <div className="bg-white border border-[#dee2e6] rounded-xl p-6 mb-5 shadow-sm">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-semibold text-gem-white font-body">
+          <span className="text-sm font-bold text-[#003c8f] font-body">
             {completed ? 'Verification Complete' : STEPS[currentStep]?.label}
           </span>
-          <span className="font-mono text-sm text-gem-blue-light">{progress}%</span>
+          <span className="font-mono text-sm font-bold text-[#003c8f]">{progress}%</span>
         </div>
-        <div className="w-full bg-white/8 rounded-full h-2 overflow-hidden">
+        <div className="w-full bg-[#e9ecef] rounded-full h-2 overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-gem-blue to-gem-green rounded-full transition-all duration-700"
+            className="h-full bg-[#138808] rounded-full transition-all duration-700"
             style={{ width: `${progress}%` }}
           />
         </div>
         {!completed && (
-          <p className="text-xs text-gem-muted font-body mt-2">{STEPS[currentStep]?.desc}</p>
+          <p className="text-xs text-[#6c757d] font-body mt-2">{STEPS[currentStep]?.desc}</p>
         )}
       </div>
 
       {/* Steps */}
-      <div className="glass-card divide-y divide-white/5">
+      <div className="bg-white border border-[#dee2e6] rounded-xl overflow-hidden divide-y divide-[#dee2e6] shadow-sm">
         {STEPS.map((step, i) => {
           const Icon = step.icon
-          const isDone = completed || i < currentStep
-          const isActive = !completed && i === currentStep
-          const isPending = !completed && i > currentStep
+          const isDone = (completed || i < currentStep) && !failed
+          const isActive = (!completed && !failed) && i === currentStep
+          const isFailed = failed && i === currentStep
+          
           return (
-            <div key={step.id} className={`flex items-center gap-4 px-5 py-4 transition-all ${isActive ? 'bg-gem-blue/8' : ''}`}>
-              <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-all ${
-                isDone ? 'bg-gem-green/15 border border-gem-green/25' :
-                isActive ? 'bg-gem-blue/20 border border-gem-blue/30' :
-                'bg-white/5 border border-white/8'
+            <div key={step.id} className={`flex items-center gap-4 px-5 py-4 transition-colors ${isActive ? 'bg-[#f8f9fa]' : ''} ${isFailed ? 'bg-[#f8d7da]' : ''}`}>
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${
+                isDone ? 'bg-[#d4edda] text-[#155724] border border-[#c3e6cb]' :
+                isFailed ? 'bg-[#f8d7da] text-[#721c24] border border-[#f5c6cb]' :
+                isActive ? 'bg-[#e3f2fd] text-[#003c8f] border border-[#003c8f]' :
+                'bg-[#e9ecef] text-[#6c757d]'
               }`}>
                 {isDone
-                  ? <CheckCircle2 size={16} className="text-gem-green-light" />
+                  ? <CheckCircle2 size={18} />
+                  : isFailed
+                  ? <Loader2 size={18} className="animate-spin" /> 
                   : isActive
-                  ? <Loader2 size={16} className="text-gem-blue-light animate-spin" />
-                  : <Clock size={14} className="text-gem-muted" />
+                  ? <Loader2 size={18} className="animate-spin" />
+                  : <Clock size={16} />
                 }
               </div>
               <div className="flex-1 min-w-0">
-                <p className={`text-sm font-semibold font-body ${isDone ? 'text-gem-white' : isActive ? 'text-gem-blue-light' : 'text-gem-muted'}`}>
+                <p className={`text-sm font-bold font-body ${isDone ? 'text-[#212529]' : isActive ? 'text-[#003c8f]' : isFailed ? 'text-[#721c24]' : 'text-[#6c757d]'}`}>
                   {step.label}
                 </p>
-                <p className="text-xs text-gem-muted font-body truncate">{step.desc}</p>
+                <p className={`text-xs font-body truncate mt-0.5 ${isFailed ? 'text-[#721c24]' : 'text-[#6c757d]'}`}>{step.desc}</p>
               </div>
-              {isDone && <CheckCircle2 size={14} className="text-gem-green-light flex-shrink-0" />}
-              {isActive && <div className="status-dot-blue flex-shrink-0 animate-pulse-dot" />}
             </div>
           )
         })}
       </div>
 
-      {completed && (
-        <div className="mt-5 flex flex-wrap gap-3 animate-slide-up">
-          <Button variant="primary" size="md" onClick={() => navigate('/documents')} iconRight={CheckCircle2}>
-            View Extracted Documents
-          </Button>
-          <Button variant="secondary" size="md" onClick={() => navigate('/audit-report')}>
-            View Report
-          </Button>
+      {failed && (
+        <div className="mt-5 p-4 rounded bg-[#f8d7da] border border-[#f5c6cb] shadow-sm animate-fade-in">
+          <p className="text-sm text-[#721c24] font-bold font-body m-0">{errorMsg}</p>
+          <div className="mt-4">
+            <button className="bg-[#dc3545] hover:bg-[#c82333] text-white px-4 py-2 rounded text-sm font-bold transition-colors" onClick={() => navigate('/upload')}>
+              Upload New Package
+            </button>
+          </div>
+        </div>
+      )}
+
+      {completed && !failed && (
+        <div className="mt-6 flex flex-col items-center animate-fade-in">
+          <Loader2 size={24} className="text-[#003c8f] animate-spin mb-2" />
+          <p className="text-sm font-bold text-[#003c8f]">Redirecting to Verification History...</p>
         </div>
       )}
     </div>

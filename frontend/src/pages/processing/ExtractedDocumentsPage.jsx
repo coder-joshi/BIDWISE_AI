@@ -1,8 +1,9 @@
-import { CheckCircle2, XCircle, Clock, FileText, ExternalLink } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { CheckCircle2, XCircle, Clock, FileText, ExternalLink, AlertTriangle } from 'lucide-react'
 import { Badge, StatusBadge } from '../../components/ui/Badge'
 import { Button } from '../../components/ui/Button'
 import { useNavigate } from 'react-router-dom'
-import { BIDDERS } from '../../data/dummyData'
+import { useUIStore } from '../../store/uiStore'
 
 const DOCUMENTS = [
   { id: 'gst', name: 'GST Registration Certificate', number: '27AABCB1234F1Z5', issuer: 'GSTN Portal', status: 'verified', extractedOn: '2026-08-28', validUntil: 'Perpetual' },
@@ -16,7 +17,19 @@ const DOCUMENTS = [
 
 export default function ExtractedDocumentsPage() {
   const navigate = useNavigate()
-  const bidder = BIDDERS.A
+  const { processingState, processingError } = useUIStore()
+  const [bidder, setBidder] = useState({ name: 'Loading...', id: '...' })
+
+  useEffect(() => {
+    fetch('http://localhost:8000/api/v1/bids/BID-2026-0841')
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'success' && data.data) {
+          setBidder({ name: data.data.bidderName, id: data.data.id })
+        }
+      })
+      .catch(err => console.error(err))
+  }, [])
 
   return (
     <div className="p-6 lg:p-8 animate-fade-in">
@@ -28,40 +41,68 @@ export default function ExtractedDocumentsPage() {
           </p>
         </div>
         <div className="flex gap-3">
-          <Button variant="secondary" size="sm" onClick={() => navigate('/gov-verify')}>
+          <Button variant="secondary" size="sm" onClick={() => navigate('/gov-verify')} disabled={processingState !== 'completed'}>
             Gov Verification →
           </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {DOCUMENTS.map((doc) => (
-          <div key={doc.id} className="glass-card-hover p-5">
-            <div className="flex items-start justify-between mb-4">
-              <div className="w-10 h-10 rounded-xl bg-gem-blue/15 flex items-center justify-center">
-                <FileText size={18} className="text-gem-blue-light" />
-              </div>
-              <StatusBadge status={doc.status} />
-            </div>
-            <h3 className="font-display font-semibold text-gem-white text-sm mb-1">{doc.name}</h3>
-            <p className="font-mono text-xs text-gem-blue-light mb-3">{doc.number}</p>
-            <div className="space-y-1.5 text-xs font-body">
-              <div className="flex justify-between">
-                <span className="text-gem-muted">Issuer</span>
-                <span className="text-gem-white font-medium text-right max-w-[60%]">{doc.issuer}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gem-muted">Extracted</span>
-                <span className="text-gem-white">{doc.extractedOn}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gem-muted">Valid Until</span>
-                <span className={doc.validUntil === 'Perpetual' || doc.validUntil === 'N/A' ? 'text-gem-muted' : 'text-gem-white'}>{doc.validUntil}</span>
-              </div>
-            </div>
+      {processingState === 'failed' ? (
+        <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-8 text-center flex flex-col items-center max-w-2xl mx-auto mt-12">
+          <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mb-4">
+            <AlertTriangle size={24} className="text-red-400" />
           </div>
-        ))}
-      </div>
+          <h2 className="text-lg font-display font-semibold text-gem-white mb-2">Processing Failed</h2>
+          <p className="text-red-400 font-body text-sm mb-6 max-w-md">
+            {processingError || 'An error occurred during AI extraction.'}
+          </p>
+          <Button variant="secondary" size="md" onClick={() => navigate('/upload')}>
+            Upload New Package
+          </Button>
+        </div>
+      ) : processingState !== 'completed' ? (
+        <div className="bg-white/[0.02] border border-white/10 rounded-xl p-8 text-center flex flex-col items-center max-w-2xl mx-auto mt-12">
+          <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4">
+            <Clock size={24} className="text-gem-muted" />
+          </div>
+          <h2 className="text-lg font-display font-semibold text-gem-white mb-2">No Documents Available</h2>
+          <p className="text-gem-muted font-body text-sm mb-6 max-w-md">
+            Documents have not been fully processed yet. Please upload a bid package to extract documents.
+          </p>
+          <Button variant="primary" size="md" onClick={() => navigate('/upload')}>
+            Go to Upload
+          </Button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          {DOCUMENTS.map((doc) => (
+            <div key={doc.id} className="glass-card-hover p-5">
+              <div className="flex items-start justify-between mb-4">
+                <div className="w-10 h-10 rounded-xl bg-gem-blue/15 flex items-center justify-center">
+                  <FileText size={18} className="text-gem-blue-light" />
+                </div>
+                <StatusBadge status={doc.status} />
+              </div>
+              <h3 className="font-display font-semibold text-gem-white text-sm mb-1">{doc.name}</h3>
+              <p className="font-mono text-xs text-gem-blue-light mb-3">{doc.number}</p>
+              <div className="space-y-1.5 text-xs font-body">
+                <div className="flex justify-between">
+                  <span className="text-gem-muted">Issuer</span>
+                  <span className="text-gem-white font-medium text-right max-w-[60%]">{doc.issuer}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gem-muted">Extracted</span>
+                  <span className="text-gem-white">{doc.extractedOn}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gem-muted">Valid Until</span>
+                  <span className={doc.validUntil === 'Perpetual' || doc.validUntil === 'N/A' ? 'text-gem-muted' : 'text-gem-white'}>{doc.validUntil}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
