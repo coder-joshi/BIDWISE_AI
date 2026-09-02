@@ -1,6 +1,16 @@
+import { useState, useEffect } from 'react'
 import { CheckCircle2, XCircle, Wifi, WifiOff } from 'lucide-react'
 import { Badge } from '../../components/ui/Badge'
-import { GOV_DATABASES, BIDDERS } from '../../data/dummyData'
+
+const GOV_DATABASES = [
+  { id: 'gstn',     name: 'GSTN Portal',    description: 'GST Network verification', icon: '🏛️', status: 'active' },
+  { id: 'pan',      name: 'Income Tax PAN', description: 'PAN card validation via IT Dept', icon: '📋', status: 'active' },
+  { id: 'mca21',    name: 'MCA21',          description: 'Ministry of Corporate Affairs', icon: '🏢', status: 'active' },
+  { id: 'udyam',    name: 'Udyam Portal',   description: 'MSME registration verification', icon: '⚙️', status: 'active' },
+  { id: 'epfo',     name: 'EPFO',           description: 'Employee provident fund registry', icon: '👥', status: 'active' },
+  { id: 'esic',     name: 'ESIC',           description: 'Employee state insurance check', icon: '🏥', status: 'active' },
+  { id: 'digilocker', name: 'DigiLocker',   description: 'Document authenticity via Aadhaar', icon: '🔒', status: 'active' },
+]
 
 const VERIFICATIONS = [
   { db: 'gstn',       status: 'match',     detail: 'GST 27AABCB1234F1Z5 active. Returns filed. No dues.', timestamp: '2026-08-28 09:16:02' },
@@ -13,7 +23,18 @@ const VERIFICATIONS = [
 ]
 
 export default function GovVerificationPage() {
-  const bidder = BIDDERS.A
+  const [bidder, setBidder] = useState({ name: 'Loading...' })
+
+  useEffect(() => {
+    fetch('http://localhost:8000/api/v1/bids/BID-2026-0841')
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'success' && data.data) {
+          setBidder({ name: data.data.bidderName })
+        }
+      })
+      .catch(err => console.error(err))
+  }, [])
 
   return (
     <div className="p-6 lg:p-8 animate-fade-in">

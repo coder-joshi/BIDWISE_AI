@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import { Shield, Menu, X, ChevronRight } from 'lucide-react'
-import { Button } from '../ui/Button'
+import { Link } from 'react-router-dom'
+import { ShieldCheck, Menu, X, ChevronRight } from 'lucide-react'
 
 const NAV_LINKS = [
-  { label: 'Features',   href: '#features' },
-  { label: 'How It Works', href: '#how-it-works' },
-  { label: 'About',      href: '#about' },
+  { label: 'Tenders',     href: '#' },
+  { label: 'Guidelines', href: '#' },
+  { label: 'About GeM',        href: '#' },
 ]
 
 export default function Navbar() {
@@ -22,19 +21,19 @@ export default function Navbar() {
   return (
     <header
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
-        scrolled ? 'nav-blur' : 'bg-transparent'
+        scrolled ? 'bg-white shadow-sm border-b border-[#dee2e6]' : 'bg-[#f8f9fa]'
       }`}
     >
-      <div className="section-container">
+      <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 rounded-lg bg-gem-blue flex items-center justify-center shadow-gem-glow group-hover:shadow-gem-glow transition-shadow">
-              <Shield size={18} className="text-white" />
+            <div className="w-9 h-9 rounded bg-[#003c8f] flex items-center justify-center">
+              <ShieldCheck size={18} className="text-white" />
             </div>
             <div>
-              <span className="font-display font-bold text-gem-white text-base leading-none block">GeM BidVerify</span>
-              <span className="font-mono text-[10px] text-gem-muted leading-none block">SIH26100</span>
+              <span className="font-display font-bold text-[#003c8f] text-base leading-none block">GeM BidVerify</span>
+              <span className="font-mono text-[10px] text-[#6c757d] leading-none block mt-0.5">Government of India</span>
             </div>
           </Link>
 
@@ -44,7 +43,7 @@ export default function Navbar() {
               <a
                 key={link.label}
                 href={link.href}
-                className="px-4 py-2 text-sm font-body text-gem-muted hover:text-gem-white transition-colors rounded-lg hover:bg-white/5"
+                className="px-4 py-2 text-sm font-bold font-body text-[#495057] hover:text-[#003c8f] transition-colors rounded hover:bg-[#e3f2fd]"
               >
                 {link.label}
               </a>
@@ -53,19 +52,14 @@ export default function Navbar() {
 
           {/* CTA */}
           <div className="hidden md:flex items-center gap-3">
-            <Link to="/login">
-              <Button variant="ghost" size="sm">Sign In</Button>
-            </Link>
-            <Link to="/login">
-              <Button variant="primary" size="sm" iconRight={ChevronRight}>
-                Start Verification
-              </Button>
+            <Link to="/login" className="bg-[#003c8f] hover:bg-[#002b66] text-white px-4 py-2 rounded text-sm font-bold flex items-center gap-2 transition-colors">
+              Login <ChevronRight size={16} />
             </Link>
           </div>
 
           {/* Mobile hamburger */}
           <button
-            className="md:hidden p-2 rounded-lg text-gem-muted hover:text-gem-white hover:bg-white/5"
+            className="md:hidden p-2 rounded text-[#495057] hover:text-[#003c8f] hover:bg-[#e3f2fd]"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="Toggle menu"
           >
@@ -76,24 +70,21 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden nav-blur border-t border-white/6">
-          <div className="section-container py-4 flex flex-col gap-1">
+        <div className="md:hidden bg-white border-t border-[#dee2e6] shadow-md">
+          <div className="px-4 py-4 flex flex-col gap-1">
             {NAV_LINKS.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
-                className="px-4 py-3 text-sm font-body text-gem-muted hover:text-gem-white transition-colors"
+                className="px-4 py-3 text-sm font-bold font-body text-[#495057] hover:text-[#003c8f] hover:bg-[#e3f2fd] rounded transition-colors"
                 onClick={() => setMobileOpen(false)}
               >
                 {link.label}
               </a>
             ))}
-            <div className="pt-3 border-t border-white/6 flex flex-col gap-2">
-              <Link to="/login" onClick={() => setMobileOpen(false)}>
-                <Button variant="secondary" size="md" fullWidth>Sign In</Button>
-              </Link>
-              <Link to="/login" onClick={() => setMobileOpen(false)}>
-                <Button variant="primary" size="md" fullWidth>Start Verification</Button>
+            <div className="pt-3 border-t border-[#dee2e6] mt-2">
+              <Link to="/login" onClick={() => setMobileOpen(false)} className="bg-[#003c8f] text-white px-4 py-3 rounded text-sm font-bold w-full flex justify-center items-center gap-2">
+                Login <ChevronRight size={16} />
               </Link>
             </div>
           </div>

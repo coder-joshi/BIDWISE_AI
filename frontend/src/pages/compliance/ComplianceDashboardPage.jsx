@@ -1,14 +1,33 @@
+import { useState, useEffect } from 'react'
 import { CheckCircle2, XCircle, Clock } from 'lucide-react'
-import { COMPLIANCE_REQUIREMENTS, BIDDERS } from '../../data/dummyData'
 import { RadialBarChart, RadialBar, ResponsiveContainer } from 'recharts'
 
 export default function ComplianceDashboardPage() {
-  const bidder = BIDDERS.A
+  const [bidder, setBidder] = useState({ name: 'Loading...', complianceScore: 0 })
+  const [requirements, setRequirements] = useState([])
+
+  useEffect(() => {
+    fetch('http://localhost:8000/api/v1/bids/BID-2026-0841')
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'success' && data.data) {
+          setBidder({
+            name: data.data.bidderName,
+            complianceScore: data.data.complianceScore
+          })
+          if (data.data.complianceRequirements) {
+            setRequirements(data.data.complianceRequirements)
+          }
+        }
+      })
+      .catch(err => console.error(err))
+  }, [])
+
   const score = bidder.complianceScore
-  const passed = COMPLIANCE_REQUIREMENTS.filter(r => r.status === 'pass').length
-  const failed = COMPLIANCE_REQUIREMENTS.filter(r => r.status === 'fail').length
-  const pending = COMPLIANCE_REQUIREMENTS.filter(r => r.status === 'pending').length
-  const total = COMPLIANCE_REQUIREMENTS.length
+  const passed = requirements.filter(r => r.status === 'pass').length
+  const failed = requirements.filter(r => r.status === 'fail').length
+  const pending = requirements.filter(r => r.status === 'pending').length
+  const total = requirements.length
 
   const gaugeData = [{ name: 'score', value: score, fill: score >= 80 ? '#0D9F6F' : score >= 50 ? '#F59E0B' : '#EF4444' }]
 
@@ -66,7 +85,7 @@ export default function ComplianceDashboardPage() {
         <div className="glass-card p-6 overflow-y-auto max-h-80">
           <h3 className="font-display font-semibold text-gem-white mb-4">Checklist</h3>
           <ul className="space-y-2">
-            {COMPLIANCE_REQUIREMENTS.map((req) => (
+            {requirements.map((req) => (
               <li key={req.id} className="flex items-center gap-2.5 text-sm font-body">
                 {req.status === 'pass'
                   ? <CheckCircle2 size={14} className="text-gem-green-light flex-shrink-0" />
