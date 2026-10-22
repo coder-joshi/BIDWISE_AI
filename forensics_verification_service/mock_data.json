@@ -1,0 +1,20 @@
+{
+  "UDYAM-ASTRA-001": {
+    "bidder": "AstraNet Infotech",
+    "status": "valid",
+    "NIC_code": "26200 Manufacturing",
+    "MSE_exempt": true
+  },
+  "UDYAM-NEXUS-002": {
+    "bidder": "Nexus Global Peripherals",
+    "status": "invalid",
+    "NIC_code": "46510 Trading",
+    "MSE_exempt": false,
+    "rejection_reason": "Udyam activity indicates wholesale trading; MSE EMD exemption invalid."
+  },
+  "UDYAM-SHIV-003": {
+    "bidder": "Shivalik Digitech",
+    "status": "valid",
+    "warning": "Registry shows ISO certificate expired 15 December 2024"
+  }
+}
