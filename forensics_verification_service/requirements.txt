@@ -1,5 +1,9 @@
 fastapi
 uvicorn
-opencv-python
-numpy
 python-multipart
+pypdf
+opencv-python-headless
+Pillow
+numpy
+pytest
+httpx
