@@ -1,32 +1,43 @@
+import os
 import cv2
 import numpy as np
-import os
+from PIL import Image, ImageChops, ImageEnhance
 
-def run_ela(image_bytes, output_filename="ela_heatmap.jpg"):
-    # Convert bytes to numpy array and decode image
-    nparr = np.frombuffer(image_bytes, np.uint8)
-    original = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+def generate_ela_heatmap(image_path: str, output_path: str, quality: int = 90):
+    """
+    Performs Error Level Analysis (ELA) on a JPEG image.
+    Saves the resulting heatmap to output_path.
+    """
+    # 1. Open the original image
+    original = Image.open(image_path).convert("RGB")
     
-    if original is None:
-        return {"error": "Invalid image file"}
-
-    # Save at 90% quality to force compression loss
-    temp_jpg = "temp_compressed.jpg"
-    cv2.imwrite(temp_jpg, original, [cv2.IMWRITE_JPEG_QUALITY, 90])
-    compressed = cv2.imread(temp_jpg)
-
-    # Calculate absolute difference (ELA)
-    diff = cv2.absdiff(original, compressed)
+    # 2. Re-save it temporarily at a known quality level
+    temp_filename = "temp_ela_resave.jpg"
+    original.save(temp_filename, "JPEG", quality=quality)
     
-    # Enhance the difference to make the heatmap pop
-    extrema = diff.max()
-    if extrema == 0:
-        extrema = 1
-    scale = 255.0 / extrema
-    ela_image = cv2.convertScaleAbs(diff, alpha=scale)
-
-    # Save the final heatmap
-    cv2.imwrite(output_filename, ela_image)
-    os.remove(temp_jpg)
+    # 3. Open the re-saved temporary image
+    resaved = Image.open(temp_filename)
     
-    return {"status": "success", "heatmap_path": output_filename, "tamper_detected": True}
+    # 4. Calculate the absolute difference between original and resaved
+    # The areas that were edited recently will have higher difference values
+    ela_image = ImageChops.difference(original, resaved)
+    
+    # 5. Enhance the difference to make it visible to the human eye
+    # We find the maximum pixel value in the difference and scale it up
+    extrema = ela_image.getextrema()
+    max_diff = max([ex[1] for ex in extrema])
+    
+    if max_diff == 0:
+        max_diff = 1 # Prevent division by zero
+        
+    scale = 255.0 / max_diff
+    ela_image = ImageEnhance.Brightness(ela_image).enhance(scale)
+    
+    # 6. Save the final heatmap
+    ela_image.save(output_path, "JPEG")
+    
+    # Cleanup temporary file
+    if os.path.exists(temp_filename):
+        os.remove(temp_filename)
+        
+    return output_path

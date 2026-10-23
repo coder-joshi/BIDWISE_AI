@@ -1,20 +1,22 @@
 {
-  "UDYAM-ASTRA-001": {
-    "bidder": "AstraNet Infotech",
+  "AstraNet": {
     "status": "valid",
-    "NIC_code": "26200 Manufacturing",
-    "MSE_exempt": true
+    "confidence": "high",
+    "explanation": "All statutory checks passed. No digital tampering detected."
   },
-  "UDYAM-NEXUS-002": {
-    "bidder": "Nexus Global Peripherals",
+  "Nexus_Global": {
     "status": "invalid",
-    "NIC_code": "46510 Trading",
-    "MSE_exempt": false,
-    "rejection_reason": "Udyam activity indicates wholesale trading; MSE EMD exemption invalid."
+    "confidence": "high",
+    "explanation": "Udyam Registry mismatch: Registered as NIC 46510 (Trading). Trading companies are ineligible for this tender."
   },
-  "UDYAM-SHIV-003": {
-    "bidder": "Shivalik Digitech",
-    "status": "valid",
-    "warning": "Registry shows ISO certificate expired 15 December 2024"
+  "Shivalik_Digitech": {
+    "status": "warning",
+    "confidence": "medium",
+    "explanation": "High probability of image tampering detected in ISO Certificate (Expiry Date region).",
+    "evidence": {
+      "value": "Modified Expiry Date",
+      "page": 41,
+      "bbox": [0.65, 0.80, 0.15, 0.05]
+    }
   }
 }
