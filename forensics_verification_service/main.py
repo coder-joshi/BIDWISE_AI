@@ -5,7 +5,7 @@ from datetime import datetime
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from models import ForensicsResponse, Evidence
 from forensics_ela import generate_ela_heatmap
-
+from forensics_metadata import analyze_pdf_metadata
 app = FastAPI(title="Forensics & Verification API", version="1.0")
 
 @app.get("/verify/gst/{gstin}", response_model=ForensicsResponse)
@@ -82,6 +82,29 @@ def analyze_ela(file: UploadFile = File(...)):
             page=1,
             bbox=[0.0, 0.0, 1.0, 1.0]
         )
+    )
+@app.post("/forensics/metadata", response_model=ForensicsResponse)
+def analyze_metadata(file: UploadFile = File(...)):
+    # 1. Save uploaded PDF temporarily
+    os.makedirs("temp", exist_ok=True)
+    input_path = f"temp/{file.filename}"
+    
+    with open(input_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+        
+    # 2. Run the metadata analyzer
+    status, explanation = analyze_pdf_metadata(input_path)
+    
+    # 3. Clean up the temp file
+    if os.path.exists(input_path):
+        os.remove(input_path)
+        
+    # 4. Return the standard API response
+    return ForensicsResponse(
+        status=status,
+        checked_at=datetime.utcnow().isoformat() + "Z",
+        confidence="high",
+        explanation=explanation
     )
 
 @app.get("/demo/bidders/{bidder_id}/forensics", response_model=ForensicsResponse)
