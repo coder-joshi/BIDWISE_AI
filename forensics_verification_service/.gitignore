@@ -1,0 +1,9 @@
+venv/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+temp/
+eval_out/
+.env
+samples/sample_cv_*
