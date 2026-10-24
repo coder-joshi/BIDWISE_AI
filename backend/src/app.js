@@ -1,7 +1,10 @@
 import express from "express";
+import path from "path";
 import cors from "cors";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
+import swaggerUi from "swagger-ui-express";
+import YAML from "yamljs";
 import { httpLogger } from "./common/config/logger.js";
 import {
   generalLimiter,
@@ -12,6 +15,9 @@ import cartRoutes from "./modules/cart/cart.routes.js";
 import bidRoutes from "./modules/bids/bids.routes.js";
 import tenderRoutes from "./modules/tenders/tenders.routes.js";
 import documentRoutes from "./modules/documents/documents.routes.js";
+import evaluationRoutes from "./modules/evaluations/evaluations.routes.js";
+import fileRoutes from "./modules/files/files.routes.js";
+import forensicsRoutes from "./modules/forensics/forensics.routes.js";
 import { initStorage } from "./modules/storage/storage.service.js";
 
 import {
@@ -24,8 +30,21 @@ const app = express();
 // Ensure upload directories exist on startup
 initStorage();
 
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+  })
+);
 app.use(httpLogger);
+
+// Serve Swagger UI documentation at /api/docs
+try {
+  const openapiPath = path.resolve(process.cwd(), "docs/openapi.yaml");
+  const swaggerDocument = YAML.load(openapiPath);
+  app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+} catch (err) {
+  console.error("Could not load openapi.yaml for Swagger UI:", err.message);
+}
 
 const defaultOrigins = ["http://localhost:5173", "http://localhost:5174"];
 const envOrigins = (process.env.CORS_ORIGIN || process.env.ALLOWED_ORIGINS || "")
@@ -71,6 +90,9 @@ app.use("/api/v1/cart", cartRoutes);
 app.use("/api/v1/tenders", tenderRoutes);
 app.use("/api/v1/bids", bidRoutes);
 app.use("/api/v1/documents", documentRoutes);
+app.use("/api/v1/evaluations", evaluationRoutes);
+app.use("/api/v1/files", fileRoutes);
+app.use("/api/v1/forensics", forensicsRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

@@ -30,3 +30,11 @@ export const deleteDocument = async (req, res) => {
   const result = await documentsService.deleteDocument(req.params.id, req.user.id);
   apiResponse.ok(res, "Document deleted successfully", result);
 };
+
+export const getPageUrl = async (req, res) => {
+  const result = await documentsService.getDocumentPageSignedUrl(
+    req.params.id,
+    req.params.n
+  );
+  apiResponse.ok(res, "Page signed URL generated successfully", result);
+};

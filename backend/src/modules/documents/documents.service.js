@@ -10,6 +10,7 @@ import storageService, {
 import validateUploadedFile from "./document-validator.js";
 import ApiError from "../../common/utils/api-error.js";
 import { DOCUMENT_TYPE_VALUES } from "../../common/constants/statuses.js";
+import { generateSignedFileUrl } from "../files/file-token.service.js";
 
 /**
  * Upload one or more documents for a bid.
@@ -245,4 +246,28 @@ export const deleteDocument = async (documentId, userId) => {
   });
 
   return { deleted: true, id: documentId };
+};
+
+/**
+ * Generate a short-lived signed URL for a rendered document page image.
+ */
+export const getDocumentPageSignedUrl = async (documentId, pageNumber) => {
+  const doc = await Document.findById(documentId);
+  if (!doc) {
+    throw ApiError.notFound("Document not found");
+  }
+
+  const n = Number(pageNumber);
+  const page = (doc.pages || []).find((p) => p.n === n);
+  if (!page || !page.imageKey) {
+    throw ApiError.notFound(`Page ${n} image not found for this document`);
+  }
+
+  const signed = generateSignedFileUrl(page.imageKey);
+  return {
+    url: signed.url,
+    expiresAt: signed.expiresAt,
+    page: n,
+    documentId: doc._id.toString(),
+  };
 };

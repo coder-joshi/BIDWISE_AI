@@ -41,3 +41,8 @@ export const getBidsByTender = async (req, res) => {
   const bids = await bidsService.getBidsByTender(req.params.id);
   apiResponse.ok(res, "Tender bidders fetched successfully", bids);
 };
+
+export const getMatrix = async (req, res) => {
+  const matrix = await tenderService.getTenderMatrix(req.params.id);
+  apiResponse.ok(res, "Tender compliance matrix fetched successfully", matrix);
+};

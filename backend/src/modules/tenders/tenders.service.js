@@ -65,7 +65,7 @@ export const getTenders = async ({ page = 1, limit = 10, status, search }) => {
 };
 
 /**
- * Get tender detail with dynamically computed KPIs.
+ * Get tender detail with dynamically computed real KPIs.
  */
 export const getTenderById = async (id) => {
   const tender = await Tender.findById(id).populate("createdBy", "name email role");
@@ -78,20 +78,32 @@ export const getTenderById = async (id) => {
     clausesAutoVerified,
     fullyCompliantBidders,
     bidIds,
+    criticalClauseIds,
   ] = await Promise.all([
     Bid.countDocuments({ tender: id }),
-    ClauseEvaluation.countDocuments({ tender: id, status: "compliant" }),
+    ClauseEvaluation.countDocuments({ tender: id, status: { $ne: "pending" } }),
     Bid.countDocuments({ tender: id, overallStatus: "compliant" }),
     Bid.find({ tender: id }).distinct("_id"),
+    Clause.find({ tender: id, severity: "critical" }).distinct("_id"),
   ]);
 
-  const criticalDiscrepancies = bidIds.length
-    ? await ForensicAlert.countDocuments({
-        bid: { $in: bidIds },
-        severity: "critical",
-        status: "open",
-      })
-    : 0;
+  const [criticalNonCompliantCount, openTamperAlerts] = await Promise.all([
+    criticalClauseIds.length
+      ? ClauseEvaluation.countDocuments({
+          tender: id,
+          clause: { $in: criticalClauseIds },
+          status: "non_compliant",
+        })
+      : 0,
+    bidIds.length
+      ? ForensicAlert.countDocuments({
+          bid: { $in: bidIds },
+          status: "open",
+        })
+      : 0,
+  ]);
+
+  const criticalDiscrepancies = criticalNonCompliantCount + openTamperAlerts;
 
   return {
     ...tender.toObject(),
@@ -101,6 +113,74 @@ export const getTenderById = async (id) => {
       fullyCompliantBidders,
       criticalDiscrepancies,
     },
+  };
+};
+
+/**
+ * Get compliance matrix for a tender.
+ * Rows = clauses (ordered, with featured flag)
+ * Columns = bidders
+ * Each cell = { status, extractedValue, sourcePage, evaluationId }
+ */
+export const getTenderMatrix = async (tenderId) => {
+  const tender = await Tender.findById(tenderId);
+  if (!tender) {
+    throw ApiError.notFound("Tender not found");
+  }
+
+  const [clauses, bidders, evaluations] = await Promise.all([
+    Clause.find({ tender: tenderId }).sort({ order: 1, createdAt: 1 }),
+    Bid.find({ tender: tenderId }).sort({ createdAt: 1 }),
+    ClauseEvaluation.find({ tender: tenderId }),
+  ]);
+
+  // Index evaluations by clauseId_bidId
+  const evalMap = new Map();
+  for (const ev of evaluations) {
+    evalMap.set(`${ev.clause.toString()}_${ev.bid.toString()}`, ev);
+  }
+
+  const columns = bidders.map((bid) => ({
+    bidderId: bid._id.toString(),
+    bidderName: bid.bidderName,
+    overallStatus: bid.overallStatus,
+    compliancePercent: bid.compliancePercent,
+    status: bid.status,
+  }));
+
+  const rows = clauses.map((clause) => {
+    const clauseId = clause._id.toString();
+    const cells = bidders.map((bid) => {
+      const ev = evalMap.get(`${clauseId}_${bid._id.toString()}`);
+      return {
+        bidderId: bid._id.toString(),
+        status: ev?.status || "pending",
+        extractedValue: ev?.extractedValue || null,
+        sourcePage: ev?.evidence?.[0]?.page || null,
+        evaluationId: ev?._id?.toString() || null,
+      };
+    });
+
+    return {
+      clauseId,
+      code: clause.code,
+      title: clause.title,
+      type: clause.type,
+      category: clause.category,
+      severity: clause.severity,
+      featured: Boolean(clause.featured),
+      order: clause.order || 0,
+      isMandatory: Boolean(clause.isMandatory),
+      cells,
+    };
+  });
+
+  return {
+    tenderId: tender._id.toString(),
+    bidNumber: tender.bidNumber,
+    organisation: tender.organisation,
+    columns,
+    rows,
   };
 };
 

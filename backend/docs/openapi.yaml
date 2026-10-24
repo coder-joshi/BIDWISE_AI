@@ -1,0 +1,781 @@
+openapi: 3.0.3
+info:
+  title: BidWise AI REST API
+  description: Centralized platform for government procurement, automated compliance evaluation, fraud detection, and TEC note generation.
+  version: 1.0.0
+servers:
+  - url: http://localhost:4000/api/v1
+    description: Local Development Server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    ApiResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        msg:
+          type: string
+          example: Operation completed successfully
+        data:
+          type: object
+
+    ApiErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        msg:
+          type: string
+          example: Error description
+        message:
+          type: string
+          example: Error description
+
+    PaginationMeta:
+      type: object
+      properties:
+        page:
+          type: integer
+          example: 1
+        limit:
+          type: integer
+          example: 20
+        total:
+          type: integer
+          example: 50
+
+    TenderKpis:
+      type: object
+      properties:
+        totalBidders:
+          type: integer
+          example: 4
+        clausesAutoVerified:
+          type: integer
+          example: 18
+        fullyCompliantBidders:
+          type: integer
+          example: 2
+        criticalDiscrepancies:
+          type: integer
+          example: 1
+
+    MatrixCell:
+      type: object
+      properties:
+        bidderId:
+          type: string
+          example: 660c1d2e4f8b9a001f3e7a12
+        status:
+          type: string
+          enum: [compliant, non_compliant, review, pending, tamper_alert]
+          example: compliant
+        extractedValue:
+          type: string
+          nullable: true
+          example: "₹32.5 Cr"
+        sourcePage:
+          type: integer
+          nullable: true
+          example: 1
+        evaluationId:
+          type: string
+          nullable: true
+          example: 660c1d2e4f8b9a001f3e7a33
+
+    EvaluationEvidence:
+      type: object
+      properties:
+        documentId:
+          type: string
+          example: 660c1d2e4f8b9a001f3e7a10
+        documentName:
+          type: string
+          example: Financial_Audit_FY24.pdf
+        page:
+          type: integer
+          example: 2
+        bbox:
+          type: object
+          properties:
+            x:
+              type: number
+              example: 0.12
+            y:
+              type: number
+              example: 0.35
+            w:
+              type: number
+              example: 0.76
+            h:
+              type: number
+              example: 0.08
+        snippet:
+          type: string
+          example: "Average annual turnover of the bidder is ₹32.50 Cr."
+
+    EvaluationDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 660c1d2e4f8b9a001f3e7a33
+        clauseId:
+          type: string
+          example: 660c1d2e4f8b9a001f3e7a05
+        clauseCode:
+          type: string
+          example: ATC 01
+        clauseTitle:
+          type: string
+          example: Minimum Annual Turnover
+        requirement:
+          type: string
+          example: Bidder must have minimum average turnover of ₹25 Cr.
+        severity:
+          type: string
+          enum: [critical, major, minor]
+          example: critical
+        status:
+          type: string
+          enum: [compliant, non_compliant, review, pending, tamper_alert]
+          example: compliant
+        extractedValue:
+          type: string
+          example: "₹32.5 Cr"
+        extractedFields:
+          type: object
+        calculation:
+          type: object
+        verification:
+          type: array
+          items:
+            type: object
+            properties:
+              kind:
+                type: string
+                example: gst
+              result:
+                type: string
+                example: valid
+              source:
+                type: string
+                enum: [mock, live]
+                example: mock
+              checkedAt:
+                type: string
+                format: date-time
+        evidence:
+          type: array
+          items:
+            $ref: '#/components/schemas/EvaluationEvidence'
+        reasoning:
+          type: string
+          example: Extracted turnover meets required threshold.
+        confidence:
+          type: number
+          example: 0.95
+        overridden:
+          type: boolean
+          example: false
+        overrideReason:
+          type: string
+          nullable: true
+        bidId:
+          type: string
+          example: 660c1d2e4f8b9a001f3e7a12
+        tenderId:
+          type: string
+          example: 660c1d2e4f8b9a001f3e7a01
+
+    ForensicAlertItem:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 660c1d2e4f8b9a001f3e7a99
+        bidId:
+          type: string
+          example: 660c1d2e4f8b9a001f3e7a12
+        documentId:
+          type: string
+          example: 660c1d2e4f8b9a001f3e7a10
+        documentName:
+          type: string
+          example: Certificate.pdf
+        page:
+          type: integer
+          example: 1
+        type:
+          type: string
+          enum: [ela, metadata, date_mismatch]
+          example: ela
+        severity:
+          type: string
+          enum: [critical, major, minor]
+          example: critical
+        documentValue:
+          type: string
+          example: "Pixel compression inconsistency"
+        registryValue:
+          type: string
+          nullable: true
+        registrySource:
+          type: string
+          enum: [mock, live]
+          example: mock
+        hasElaImage:
+          type: boolean
+          example: true
+        elaUrl:
+          type: string
+          nullable: true
+          example: "/api/v1/files/eyJhbGciOiJIUzI1NiJ9.sig"
+        note:
+          type: string
+          example: "High ELA variance detected in turnover figure."
+        status:
+          type: string
+          enum: [open, reviewed, dismissed]
+          example: open
+
+    TecNote:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 660c1d2e4f8b9a001f3e7b10
+        bid:
+          type: string
+          example: 660c1d2e4f8b9a001f3e7a12
+        content:
+          type: string
+          example: "TENDER EVALUATION COMMITTEE (TEC) NOTE..."
+        status:
+          type: string
+          enum: [draft, final]
+          example: draft
+        generatedAt:
+          type: string
+          format: date-time
+        editedBy:
+          type: string
+          nullable: true
+        editedAt:
+          type: string
+          nullable: true
+          format: date-time
+
+security:
+  - bearerAuth: []
+
+paths:
+  # ── Health ─────────────────────────────────────────────────────────────
+  /health:
+    get:
+      summary: Health check endpoint
+      security: []
+      responses:
+        '200':
+          description: Server is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  # ── Tenders & Matrix ───────────────────────────────────────────────────
+  /tenders:
+    get:
+      summary: List tenders with pagination
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Tenders list fetched
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+
+  /tenders/{id}:
+    get:
+      summary: Get tender details with dynamic real KPIs
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+      responses:
+        '200':
+          description: Tender details with KPIs (totalBidders, clausesAutoVerified, fullyCompliantBidders, criticalDiscrepancies)
+        '400':
+          description: Invalid ObjectId
+        '404':
+          description: Tender not found
+
+  /tenders/{id}/matrix:
+    get:
+      summary: Get compliance evaluation matrix
+      description: Returns rows = clauses (ordered, with featured flag), columns = bidders, and individual cell evaluation states.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+      responses:
+        '200':
+          description: Matrix data fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      tenderId:
+                        type: string
+                      bidNumber:
+                        type: string
+                      columns:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            bidderId:
+                              type: string
+                            bidderName:
+                              type: string
+                            overallStatus:
+                              type: string
+                            compliancePercent:
+                              type: number
+                      rows:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            clauseId:
+                              type: string
+                            code:
+                              type: string
+                            title:
+                              type: string
+                            category:
+                              type: string
+                            severity:
+                              type: string
+                            featured:
+                              type: boolean
+                            order:
+                              type: number
+                            cells:
+                              type: array
+                              items:
+                                $ref: '#/components/schemas/MatrixCell'
+        '400':
+          description: Invalid tender ID format
+        '404':
+          description: Tender not found
+
+  # ── Evidence & Evaluations ─────────────────────────────────────────────
+  /evaluations/{id}:
+    get:
+      summary: Get detailed evaluation evidence
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+      responses:
+        '200':
+          description: Evaluation evidence fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/EvaluationDetail'
+        '400':
+          description: Invalid evaluation ID
+        '404':
+          description: Evaluation not found
+
+  /evaluations/{id}/review:
+    patch:
+      summary: Officer review override for a clause evaluation
+      description: Overrides status with mandatory justification reason, logs to AuditLog, and recalculates bid compliance score.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status, reason]
+              properties:
+                status:
+                  type: string
+                  enum: [compliant, non_compliant, review]
+                reason:
+                  type: string
+                  minLength: 3
+                  maxLength: 1000
+                  example: "Certificate verified directly through official portal"
+      responses:
+        '200':
+          description: Evaluation status overridden and bid score recalculated
+        '400':
+          description: Validation error in request body or ID
+        '404':
+          description: Evaluation not found
+
+  # ── Forensics ──────────────────────────────────────────────────────────
+  /bids/{id}/forensics:
+    get:
+      summary: List forensic anomaly alerts for a bid
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Forensic alerts retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      items:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/ForensicAlertItem'
+                      page:
+                        type: integer
+                      limit:
+                        type: integer
+                      total:
+                        type: integer
+        '404':
+          description: Bid not found
+
+  /forensics/{id}:
+    get:
+      summary: Get forensic alert detail and comparison data
+      description: Returns documentValue vs registryValue, registrySource, metadata, and signed ELA overlay URL.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+      responses:
+        '200':
+          description: Forensic alert detail fetched
+        '400':
+          description: Invalid alert ID
+        '404':
+          description: Forensic alert not found
+
+  /forensics/{id}/ela-url:
+    get:
+      summary: Get short-lived signed URL for ELA image
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+      responses:
+        '200':
+          description: Signed URL generated (expires in 5 minutes)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      url:
+                        type: string
+                        example: "/api/v1/files/eyJhbGciOiJIUzI1NiJ9..."
+                      expiresAt:
+                        type: string
+                        format: date-time
+        '404':
+          description: Alert not found or no ELA image available
+
+  # ── Signed File URLs & Streaming ───────────────────────────────────────
+  /documents/{id}/pages/{n}/url:
+    get:
+      summary: Get short-lived signed URL for a rendered document page image
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+        - in: path
+          name: n
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: Signed URL generated (expires in 5 minutes)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      url:
+                        type: string
+                        example: "/api/v1/files/eyJhbGciOiJIUzI1NiJ9..."
+                      expiresAt:
+                        type: string
+                        format: date-time
+                      page:
+                        type: integer
+                      documentId:
+                        type: string
+        '400':
+          description: Invalid document ID or page parameter
+        '404':
+          description: Document or page not found
+
+  /files/{token}:
+    get:
+      summary: Public secure file streaming endpoint
+      description: Streams file directly using HMAC-signed token with 5-minute expiry and Cache-Control headers.
+      security: []
+      parameters:
+        - in: path
+          name: token
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: File stream binary
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Malformed or missing token
+        '401':
+          description: Invalid signature or expired token (5 minute limit)
+        '403':
+          description: Path traversal forbidden
+        '404':
+          description: File not found on storage disk
+
+  # ── TEC Rejection Note ─────────────────────────────────────────────────
+  /bids/{id}/tec-note:
+    post:
+      summary: Generate draft TEC rejection note from stored data
+      description: Template-based draft citing clause codes, page numbers, and declaring simulated mock statutory checks.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+      responses:
+        '201':
+          description: Draft TEC note generated and saved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/TecNote'
+        '404':
+          description: Bid not found
+
+    patch:
+      summary: Reviewer edits and updates TEC note content or status
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [content]
+              properties:
+                content:
+                  type: string
+                  example: "Updated TEC committee observations..."
+                status:
+                  type: string
+                  enum: [draft, final]
+                  example: final
+      responses:
+        '200':
+          description: TEC note updated successfully
+        '404':
+          description: TEC note not found for this bid
+
+    get:
+      summary: Get current TEC note for a bid
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+      responses:
+        '200':
+          description: TEC note retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/TecNote'
+        '404':
+          description: TEC note not found
+
+  /bids/{id}/tec-note/export:
+    get:
+      summary: Export TEC note as a downloadable PDF document
+      description: Generates formatted PDF using PDFKit and streams as an attachment.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+      responses:
+        '200':
+          description: Downloadable PDF document stream
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: TEC note or Bid not found
+
+  # ── Pipeline & Job Queue ───────────────────────────────────────────────
+  /bids/{id}/process:
+    post:
+      summary: Enqueue bid for processing pipeline
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+      responses:
+        '201':
+          description: Job enqueued
+        '400':
+          description: Cannot process bid with no uploaded documents
+        '409':
+          description: A processing job is already active for this bid
+
+  /bids/{id}/status:
+    get:
+      summary: Poll processing job progress, stages, and timings
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+      responses:
+        '200':
+          description: Processing status and stage durations

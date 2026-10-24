@@ -21,6 +21,7 @@ router.use(authenticate, authorize("admin", "procurement_officer"));
 router.post("/", validateDto(CreateTenderDto), controller.create);
 router.get("/", validateDto(PaginationQueryDto, "query"), controller.getAll);
 router.get("/:id", validateDto(ObjectIdParamDto, "params"), controller.getById);
+router.get("/:id/matrix", validateDto(ObjectIdParamDto, "params"), controller.getMatrix);
 router.patch(
   "/:id",
   validateDto({ params: ObjectIdParamDto, body: UpdateTenderDto }),
