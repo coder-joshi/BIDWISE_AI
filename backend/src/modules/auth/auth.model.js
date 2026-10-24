@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import { USER_ROLES, USER_ROLE_VALUES } from "../../common/constants/statuses.js";
 
 const userSchema = new mongoose.Schema(
   {
@@ -25,8 +26,8 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["customer", "seller", "admin", "procurement_officer"],
-      default: "customer",
+      enum: USER_ROLE_VALUES,
+      default: USER_ROLES.CUSTOMER,
     },
     isVerified: {
       type: Boolean,
@@ -52,11 +53,10 @@ const userSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
+userSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
 
   this.password = await bcrypt.hash(this.password, 12);
-  next();
 });
 
 userSchema.methods.comparePassword = async function (clearTextPassword) {

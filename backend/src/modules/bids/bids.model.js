@@ -1,9 +1,16 @@
 import mongoose from "mongoose";
+import {
+  BID_STATUSES,
+  BID_STATUS_VALUES,
+  BID_DOCUMENT_TYPE_VALUES,
+  DOCUMENT_VERIFICATION_STATUSES,
+  DOCUMENT_VERIFICATION_STATUS_VALUES,
+} from "../../common/constants/statuses.js";
 
 const bidDocumentSchema = new mongoose.Schema({
   type: {
     type: String,
-    enum: ["gst", "pan", "udyam", "iso", "experience", "bank_solvency", "oem", "other"],
+    enum: BID_DOCUMENT_TYPE_VALUES,
     required: true,
   },
   originalName: { type: String, required: true },
@@ -15,8 +22,8 @@ const bidDocumentSchema = new mongoose.Schema({
   extractedData: { type: mongoose.Schema.Types.Mixed, default: {} },
   verificationStatus: {
     type: String,
-    enum: ["pending", "verified", "failed", "mismatch"],
-    default: "pending",
+    enum: DOCUMENT_VERIFICATION_STATUS_VALUES,
+    default: DOCUMENT_VERIFICATION_STATUSES.PENDING,
   },
 });
 
@@ -29,8 +36,8 @@ const bidSchema = new mongoose.Schema(
     udyamNumber:     { type: String, trim: true },
     status: {
       type: String,
-      enum: ["pending", "processing", "verified", "failed"],
-      default: "pending",
+      enum: BID_STATUS_VALUES,
+      default: BID_STATUSES.PENDING,
     },
     riskScore:        { type: Number, min: 0, max: 100, default: null },
     complianceScore:  { type: Number, min: 0, max: 100, default: null },

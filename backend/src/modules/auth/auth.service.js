@@ -8,7 +8,6 @@ import {
   verifyRefreshToken,
 } from "../../common/utils/jwt.utils.js";
 import { sendVerificationEmail, sendMail } from "../../common/utils/email.js";
-import apiResponse from "../../common/utils/api-response.js";
 
 const hashToken = (token) => {
   return crypto.createHash("sha256").update(token).digest("hex");
@@ -66,7 +65,7 @@ const login = async ({ email, password }) => {
 };
 
 const refresh = async (token) => {
-  if (!token) return ApiError.unauthorized("Refresh token missing");
+  if (!token) throw ApiError.unauthorized("Refresh token missing");
   const decoded = verifyRefreshToken(token);
 
   const user = await User.findById(decoded.id).select("+refreshToken");
@@ -83,7 +82,7 @@ const refresh = async (token) => {
 
 const forgotPassword = async (email) => {
   const user = await User.findOne({ email });
-  if (!user) throw ApiError.notfound("No acccount with that email");
+  if (!user) throw ApiError.notFound("No account with that email");
 
   const { rawToken, hashedToken } = generateResetToken();
   user.resetPasswordToken = hashedToken;
