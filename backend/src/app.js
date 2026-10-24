@@ -1,11 +1,20 @@
 import express from "express";
 import cors from "cors";
+import helmet from "helmet";
 import cookieParser from "cookie-parser";
+import { httpLogger } from "./common/config/logger.js";
+import {
+  generalLimiter,
+  authLimiter,
+} from "./common/middleware/rate-limit.middleware.js";
 import authRoutes from "./modules/auth/auth.routes.js";
 import cartRoutes from "./modules/cart/cart.routes.js";
 import bidRoutes from "./modules/bids/bids.routes.js";
 
 const app = express();
+
+app.use(helmet());
+app.use(httpLogger);
 
 const defaultOrigins = ["http://localhost:5173", "http://localhost:5174"];
 const envOrigins = (process.env.CORS_ORIGIN || process.env.ALLOWED_ORIGINS || "")
@@ -28,11 +37,12 @@ app.use(
   })
 );
 
+app.use(generalLimiter);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/auth", authLimiter, authRoutes);
 app.use("/api/v1/cart", cartRoutes);
 app.use("/api/v1/bids", bidRoutes);
 
