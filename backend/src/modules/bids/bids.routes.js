@@ -1,7 +1,8 @@
 import { Router } from "express";
 import multer from "multer";
 import path from "path";
-import { authenticate } from "../auth/auth.middleware.js";
+import { authenticate, authorize } from "../auth/auth.middleware.js";
+import { USER_ROLES } from "../../common/constants/statuses.js";
 import * as controller from "./bids.controller.js";
 
 // ── Multer disk storage ───────────────────────────────────────
@@ -38,8 +39,23 @@ const upload = multer({
 const router = Router();
 
 router.post("/upload", authenticate, upload.array("documents", 10), controller.upload);
-router.get("/",        controller.getAll); // Mock bypass
-router.get("/:id",     controller.getById); // Mock bypass
-router.patch("/:id/status", controller.updateStatus); // Mock bypass
+router.get(
+  "/",
+  authenticate,
+  authorize(USER_ROLES.ADMIN, USER_ROLES.PROCUREMENT_OFFICER),
+  controller.getAll
+);
+router.get(
+  "/:id",
+  authenticate,
+  authorize(USER_ROLES.ADMIN, USER_ROLES.PROCUREMENT_OFFICER),
+  controller.getById
+);
+router.patch(
+  "/:id/status",
+  authenticate,
+  authorize(USER_ROLES.ADMIN, USER_ROLES.PROCUREMENT_OFFICER),
+  controller.updateStatus
+);
 
 export default router;
