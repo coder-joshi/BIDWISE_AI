@@ -11,6 +11,11 @@ import authRoutes from "./modules/auth/auth.routes.js";
 import cartRoutes from "./modules/cart/cart.routes.js";
 import bidRoutes from "./modules/bids/bids.routes.js";
 
+import {
+  notFoundHandler,
+  errorHandler,
+} from "./common/middleware/error.middleware.js";
+
 const app = express();
 
 app.use(helmet());
@@ -45,5 +50,8 @@ app.use(cookieParser());
 app.use("/api/v1/auth", authLimiter, authRoutes);
 app.use("/api/v1/cart", cartRoutes);
 app.use("/api/v1/bids", bidRoutes);
+
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 export default app;
