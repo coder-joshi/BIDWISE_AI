@@ -1,7 +1,10 @@
 import express from "express";
+import path from "path";
 import cors from "cors";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
+import swaggerUi from "swagger-ui-express";
+import YAML from "yamljs";
 import { httpLogger } from "./common/config/logger.js";
 import {
   generalLimiter,
@@ -27,8 +30,21 @@ const app = express();
 // Ensure upload directories exist on startup
 initStorage();
 
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+  })
+);
 app.use(httpLogger);
+
+// Serve Swagger UI documentation at /api/docs
+try {
+  const openapiPath = path.resolve(process.cwd(), "docs/openapi.yaml");
+  const swaggerDocument = YAML.load(openapiPath);
+  app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+} catch (err) {
+  console.error("Could not load openapi.yaml for Swagger UI:", err.message);
+}
 
 const defaultOrigins = ["http://localhost:5173", "http://localhost:5174"];
 const envOrigins = (process.env.CORS_ORIGIN || process.env.ALLOWED_ORIGINS || "")
