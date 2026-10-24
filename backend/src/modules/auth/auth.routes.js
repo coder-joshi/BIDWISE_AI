@@ -6,7 +6,7 @@ import { authenticate } from "./auth.middleware.js";
 import LoginDto from "./dto/login.dto.js";
 import ForgotPasswordDto from "./dto/forgot-password.dto.js";
 import VerifyEmailDto from "./dto/verify-email.dto.js";
-import ResetPasswordDto from "./dto/reset-password.dtp.js";
+import ResetPasswordDto from "./dto/reset-password.dto.js";
 const router = Router();
 
 router.post("/register", validateDto(RegisterDto), controller.register);
