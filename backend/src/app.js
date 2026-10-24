@@ -11,6 +11,8 @@ import authRoutes from "./modules/auth/auth.routes.js";
 import cartRoutes from "./modules/cart/cart.routes.js";
 import bidRoutes from "./modules/bids/bids.routes.js";
 import tenderRoutes from "./modules/tenders/tenders.routes.js";
+import documentRoutes from "./modules/documents/documents.routes.js";
+import { initStorage } from "./modules/storage/storage.service.js";
 
 import {
   notFoundHandler,
@@ -18,6 +20,9 @@ import {
 } from "./common/middleware/error.middleware.js";
 
 const app = express();
+
+// Ensure upload directories exist on startup
+initStorage();
 
 app.use(helmet());
 app.use(httpLogger);
@@ -65,6 +70,7 @@ app.use("/api/v1/auth", authLimiter, authRoutes);
 app.use("/api/v1/cart", cartRoutes);
 app.use("/api/v1/tenders", tenderRoutes);
 app.use("/api/v1/bids", bidRoutes);
+app.use("/api/v1/documents", documentRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
