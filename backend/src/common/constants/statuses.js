@@ -136,6 +136,41 @@ export const TEC_NOTE_STATUSES = Object.freeze({
 });
 export const TEC_NOTE_STATUS_VALUES = Object.freeze(Object.values(TEC_NOTE_STATUSES));
 
+// ── Jobs ──────────────────────────────────────────────────────────────────────
+export const JOB_TYPES = Object.freeze({
+  PROCESS_BID: "process_bid",
+});
+export const JOB_TYPE_VALUES = Object.freeze(Object.values(JOB_TYPES));
+
+export const JOB_STATUSES = Object.freeze({
+  QUEUED: "queued",
+  RUNNING: "running",
+  SUCCEEDED: "succeeded",
+  FAILED: "failed",
+});
+export const JOB_STATUS_VALUES = Object.freeze(Object.values(JOB_STATUSES));
+
+export const STAGE_STATUSES = Object.freeze({
+  PENDING: "pending",
+  RUNNING: "running",
+  SUCCEEDED: "succeeded",
+  FAILED: "failed",
+  SKIPPED: "skipped",
+});
+export const STAGE_STATUS_VALUES = Object.freeze(Object.values(STAGE_STATUSES));
+
+export const PIPELINE_STAGE_NAMES = Object.freeze({
+  RENDER: "render",
+  ANALYZE: "analyze",
+  RULES: "rules",
+  VERIFY: "verify",
+  FORENSICS: "forensics",
+  SCORE: "score",
+});
+export const PIPELINE_STAGE_NAME_VALUES = Object.freeze(
+  Object.values(PIPELINE_STAGE_NAMES)
+);
+
 // ── Legacy aliases — kept for existing bids.model.js / auth.model.js imports ─
 export const BID_DOCUMENT_TYPES = DOCUMENT_TYPES;
 export const BID_DOCUMENT_TYPE_VALUES = DOCUMENT_TYPE_VALUES;
