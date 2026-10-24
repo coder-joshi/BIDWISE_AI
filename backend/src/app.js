@@ -13,6 +13,8 @@ import bidRoutes from "./modules/bids/bids.routes.js";
 import tenderRoutes from "./modules/tenders/tenders.routes.js";
 import documentRoutes from "./modules/documents/documents.routes.js";
 import evaluationRoutes from "./modules/evaluations/evaluations.routes.js";
+import fileRoutes from "./modules/files/files.routes.js";
+import forensicsRoutes from "./modules/forensics/forensics.routes.js";
 import { initStorage } from "./modules/storage/storage.service.js";
 
 import {
@@ -73,6 +75,8 @@ app.use("/api/v1/tenders", tenderRoutes);
 app.use("/api/v1/bids", bidRoutes);
 app.use("/api/v1/documents", documentRoutes);
 app.use("/api/v1/evaluations", evaluationRoutes);
+app.use("/api/v1/files", fileRoutes);
+app.use("/api/v1/forensics", forensicsRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

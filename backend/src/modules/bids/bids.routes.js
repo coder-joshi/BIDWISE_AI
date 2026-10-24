@@ -2,11 +2,13 @@ import { Router } from "express";
 import { authenticate, authorize } from "../auth/auth.middleware.js";
 import { USER_ROLES } from "../../common/constants/statuses.js";
 import validateDto from "../../common/middleware/validate.middleware.js";
+import { ObjectIdParamDto, PaginationQueryDto } from "../../common/dto/params.dto.js";
 import { uploadDocumentsMiddleware } from "../../common/middleware/upload.middleware.js";
 import UpdateBidStatusDto from "./dto/update-bid-status.dto.js";
 import * as controller from "./bids.controller.js";
 import * as documentsController from "../documents/documents.controller.js";
 import * as jobController from "../jobs/job.controller.js";
+import * as forensicsController from "../forensics/forensics.controller.js";
 
 const router = Router();
 
@@ -16,6 +18,7 @@ router.use(authenticate, authorize(USER_ROLES.ADMIN, USER_ROLES.PROCUREMENT_OFFI
 // Job Queue & Pipeline endpoints
 router.post("/:id/process", jobController.processBid);
 router.get("/:id/status", jobController.getBidStatus);
+router.get("/:id/forensics", validateDto(ObjectIdParamDto, "params"), forensicsController.getBidAlerts);
 
 // Legacy upload endpoint
 router.post("/upload", uploadDocumentsMiddleware("documents", 10), controller.upload);
