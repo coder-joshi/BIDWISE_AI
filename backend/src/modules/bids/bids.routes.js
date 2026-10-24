@@ -4,6 +4,8 @@ import multer from "multer";
 import path from "path";
 import { authenticate, authorize } from "../auth/auth.middleware.js";
 import { USER_ROLES } from "../../common/constants/statuses.js";
+import validateDto from "../../common/middleware/validate.middleware.js";
+import UpdateBidStatusDto from "./dto/update-bid-status.dto.js";
 import * as controller from "./bids.controller.js";
 
 // ── Multer disk storage ───────────────────────────────────────
@@ -44,24 +46,12 @@ const upload = multer({
 // ── Routes ─────────────────────────────────────────────────────
 const router = Router();
 
-router.post("/upload", authenticate, upload.array("documents", 10), controller.upload);
-router.get(
-  "/",
-  authenticate,
-  authorize(USER_ROLES.ADMIN, USER_ROLES.PROCUREMENT_OFFICER),
-  controller.getAll
-);
-router.get(
-  "/:id",
-  authenticate,
-  authorize(USER_ROLES.ADMIN, USER_ROLES.PROCUREMENT_OFFICER),
-  controller.getById
-);
-router.patch(
-  "/:id/status",
-  authenticate,
-  authorize(USER_ROLES.ADMIN, USER_ROLES.PROCUREMENT_OFFICER),
-  controller.updateStatus
-);
+// All bid routes require authentication and authorization (admin or procurement_officer)
+router.use(authenticate, authorize(USER_ROLES.ADMIN, USER_ROLES.PROCUREMENT_OFFICER));
+
+router.post("/upload", upload.array("documents", 10), controller.upload);
+router.get("/", controller.getAll);
+router.get("/:id", controller.getById);
+router.patch("/:id/status", validateDto(UpdateBidStatusDto), controller.updateStatus);
 
 export default router;

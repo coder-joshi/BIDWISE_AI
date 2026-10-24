@@ -16,17 +16,22 @@ const upload = async (req, res) => {
 };
 
 const getAll = async (req, res) => {
-  const bids = await bidsService.getAllBids(req.user.id);
-  apiResponse.ok(res, "Bids fetched", bids);
+  const bids = await bidsService.getAllBids();
+  apiResponse.ok(res, "Bids fetched successfully", bids);
 };
 
 const getById = async (req, res) => {
   const bid = await bidsService.getBidById(req.params.id);
-  apiResponse.ok(res, "Bid fetched", bid);
+  apiResponse.ok(res, "Bid fetched successfully", bid);
 };
 
 const updateStatus = async (req, res) => {
-  const bid = await bidsService.updateBidStatus(req.params.id, req.body.status, req.body);
+  const bid = await bidsService.updateBidStatus(
+    req.params.id,
+    req.body.status,
+    req.body,
+    req.user
+  );
   apiResponse.ok(res, "Bid status updated", bid);
 };
 
