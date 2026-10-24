@@ -9,6 +9,8 @@ import * as controller from "./bids.controller.js";
 import * as documentsController from "../documents/documents.controller.js";
 import * as jobController from "../jobs/job.controller.js";
 import * as forensicsController from "../forensics/forensics.controller.js";
+import * as tecController from "../tec/tec.controller.js";
+import UpdateTecNoteDto from "../tec/dto/update-tec-note.dto.js";
 
 const router = Router();
 
@@ -19,6 +21,16 @@ router.use(authenticate, authorize(USER_ROLES.ADMIN, USER_ROLES.PROCUREMENT_OFFI
 router.post("/:id/process", jobController.processBid);
 router.get("/:id/status", jobController.getBidStatus);
 router.get("/:id/forensics", validateDto(ObjectIdParamDto, "params"), forensicsController.getBidAlerts);
+
+// TEC rejection note endpoints
+router.post("/:id/tec-note", validateDto(ObjectIdParamDto, "params"), tecController.generateDraft);
+router.patch(
+  "/:id/tec-note",
+  validateDto({ params: ObjectIdParamDto, body: UpdateTecNoteDto }),
+  tecController.updateNote
+);
+router.get("/:id/tec-note", validateDto(ObjectIdParamDto, "params"), tecController.getNote);
+router.get("/:id/tec-note/export", validateDto(ObjectIdParamDto, "params"), tecController.exportPdf);
 
 // Legacy upload endpoint
 router.post("/upload", uploadDocumentsMiddleware("documents", 10), controller.upload);
