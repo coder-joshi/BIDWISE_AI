@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { authenticate, authorize } from "../auth/auth.middleware.js";
 import validateDto from "../../common/middleware/validate.middleware.js";
+import { uploadDocumentsMiddleware } from "../../common/middleware/upload.middleware.js";
 import {
   ObjectIdParamDto,
   PaginationQueryDto,
@@ -10,6 +11,7 @@ import UpdateTenderDto from "./dto/update-tender.dto.js";
 import CreateClausesDto from "./dto/create-clauses.dto.js";
 import CreateBidderDto from "../bids/dto/create-bidder.dto.js";
 import * as controller from "./tenders.controller.js";
+import * as documentsController from "../documents/documents.controller.js";
 
 const router = Router();
 
@@ -23,6 +25,13 @@ router.patch(
   "/:id",
   validateDto({ params: ObjectIdParamDto, body: UpdateTenderDto }),
   controller.update
+);
+
+// Tender document upload
+router.post(
+  "/:tenderId/documents",
+  uploadDocumentsMiddleware("documents", 10),
+  documentsController.uploadTenderDocument
 );
 
 router.post(
