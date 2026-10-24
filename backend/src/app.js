@@ -47,6 +47,19 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+app.get("/api/v1/health", (req, res) => {
+  res.status(200).json({
+    success: true,
+    msg: "Server is healthy",
+    data: {
+      status: "ok",
+      uptime: process.uptime(),
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV || "development",
+    },
+  });
+});
+
 app.use("/api/v1/auth", authLimiter, authRoutes);
 app.use("/api/v1/cart", cartRoutes);
 app.use("/api/v1/bids", bidRoutes);
