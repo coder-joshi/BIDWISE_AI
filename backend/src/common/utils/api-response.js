@@ -9,7 +9,7 @@ class apiResponse {
 
   static created(res, msg, data = null) {
     return res.status(201).json({
-      succes: true,
+      success: true,
       msg,
       data,
     });
