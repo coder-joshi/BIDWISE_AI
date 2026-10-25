@@ -2,7 +2,7 @@
 
 Checks government tender bids against the tender's clauses and flags documents for a human committee to verify.
 
-**Live link:** [NEEDS FACT] (no deployment found in the repo; runs locally, see "Run it locally")
+**Live link:** GitHub Pages: `https://coder-joshi.github.io/BIDWISE_AI/` (configured via `.github/workflows/deploy.yml`). Vercel blueprint in `frontend/vercel.json`, Render blueprint in `render.yaml`.
 
 ![Dashboard at 1440px, 2026-10-25](shots/dashboard-desktop-after.png)
 
@@ -101,6 +101,19 @@ Frontend (`frontend/`): `npm install`, then `npm run dev`. Port 5173. It proxies
 Forensics service (`forensics_verification_service/`): create a venv, `pip install -r requirements.txt`, then `python -m uvicorn main:app --port 8001`. Use port 8001 because the older `python-backend` also defaults to 8000.
 
 Older AI prototype (`python-backend/`): needs `GEMINI_API_KEY`. Port 8000.
+
+## How to deploy
+
+1. **Frontend on GitHub Pages:**
+   - In GitHub: **Settings -> Pages -> Build and deployment -> Source = GitHub Actions**.
+   - Push to `main` or manually run the "Deploy Frontend to GitHub Pages" workflow.
+2. **Frontend on Vercel:**
+   - Import repository root or `frontend/` directory.
+   - Build Command: `npm run build`, Output Directory: `dist`. SPA routing handled via `frontend/vercel.json`.
+   - Set environment variables: `VITE_API_URL` (points to deployed backend) and `VITE_AI_API_URL`.
+3. **Backend on Render / Railway:**
+   - Uses `render.yaml` infrastructure-as-code blueprint or `backend/Procfile`.
+   - Set environment variables: `MONGO_URI` (MongoDB Atlas), `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `FILE_URL_SECRET`, `CORS_ORIGIN` (deployed frontend URL), `AI_SERVICE_URL`.
 
 ## What I would do next
 
