@@ -6,6 +6,9 @@ const DEFAULT_SECRET = "bidwise_secure_file_url_secret_key_2026";
 const SIGNED_URL_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
 function getSecret() {
+  if (process.env.NODE_ENV === "production" && !process.env.FILE_URL_SECRET) {
+    throw new Error("FATAL: FILE_URL_SECRET environment variable must be set in production");
+  }
   return process.env.FILE_URL_SECRET || DEFAULT_SECRET;
 }
 

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Search, Filter, History, ArrowDownToLine, MoreHorizontal } from 'lucide-react'
 import { StatusBadge, RiskBadge } from '../../components/ui/Badge'
+import { AI_API_BASE_URL } from '../../lib/api'
 
 export default function VerificationHistoryPage() {
   const [query, setQuery] = useState('')
@@ -10,7 +11,7 @@ export default function VerificationHistoryPage() {
 
   useEffect(() => {
     // Fetch real data from python backend
-    fetch('http://localhost:8000/api/v1/bids/')
+    fetch(`${AI_API_BASE_URL}/api/v1/bids/`)
       .then(res => res.json())
       .then(data => {
         if (data.status === 'success') {

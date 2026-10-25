@@ -17,6 +17,7 @@ export async function runRulesStage(context) {
   let passedCount = 0;
   let failedCount = 0;
   let reviewCount = 0;
+  const bulkOps = [];
 
   for (const evaluation of evaluations) {
     const clause = evaluation.clause;
@@ -41,11 +42,26 @@ export async function runRulesStage(context) {
       evaluation.reasoning = ruleResult.reasoning;
     }
 
-    await evaluation.save();
+    bulkOps.push({
+      updateOne: {
+        filter: { _id: evaluation._id },
+        update: {
+          $set: {
+            status: evaluation.status,
+            calculation: evaluation.calculation,
+            reasoning: evaluation.reasoning,
+          },
+        },
+      },
+    });
 
     if (ruleResult.status === "compliant") passedCount++;
     else if (ruleResult.status === "non_compliant") failedCount++;
     else reviewCount++;
+  }
+
+  if (bulkOps.length > 0) {
+    await ClauseEvaluation.bulkWrite(bulkOps);
   }
 
   logger.info(

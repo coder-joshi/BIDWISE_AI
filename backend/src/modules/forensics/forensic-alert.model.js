@@ -93,6 +93,8 @@ const forensicAlertSchema = new Schema(
 // ── Indexes ───────────────────────────────────────────────────────────────────
 // List all forensic alerts for a bid filtered by status (e.g. active open alerts)
 forensicAlertSchema.index({ bid: 1, status: 1 });
+// Active triage counts by bid, severity, and status
+forensicAlertSchema.index({ bid: 1, severity: 1, status: 1 });
 // Trace all alerts attached to a particular document
 forensicAlertSchema.index({ document: 1 });
 // Triage queries by alert type and severity level

@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react'
 import { CheckCircle2, XCircle, Clock } from 'lucide-react'
 import { RadialBarChart, RadialBar, ResponsiveContainer } from 'recharts'
+import { AI_API_BASE_URL } from '../../lib/api'
 
 export default function ComplianceDashboardPage() {
   const [bidder, setBidder] = useState({ name: 'Loading...', complianceScore: 0 })
   const [requirements, setRequirements] = useState([])
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/v1/bids/BID-2026-0841')
+    fetch(`${AI_API_BASE_URL}/api/v1/bids/BID-2026-0841`)
       .then(res => res.json())
       .then(data => {
         if (data.status === 'success' && data.data) {

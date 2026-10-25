@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import { MailtrapTransport } from "mailtrap";
+import { logger } from "../config/logger.js";
 
 const TOKEN = process.env.EMAIL_TOKEN;
 
@@ -23,9 +24,9 @@ const sendMail = async (email, msg) => {
       text: msg,
     });
 
-    console.log(info);
+    logger.info({ info, email }, "Email sent successfully");
   } catch (error) {
-    console.error(error);
+    logger.error({ err: error, email }, "Failed to send email");
   }
 };
 
@@ -38,9 +39,9 @@ const sendVerificationEmail = async (email, token) => {
       text: `Your verification token is: ${token}`,
     });
 
-    console.log(info);
+    logger.info({ info, email }, "Verification email sent successfully");
   } catch (error) {
-    console.error(error);
+    logger.error({ err: error, email }, "Failed to send verification email");
   }
 };
 

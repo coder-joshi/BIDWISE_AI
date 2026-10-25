@@ -5,6 +5,7 @@ import {
   Cloud, FileType, ChevronRight, Info
 } from 'lucide-react'
 import { useUIStore } from '../../store/uiStore'
+import { AI_API_BASE_URL } from '../../lib/api'
 
 const ACCEPTED_TYPES = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
 const MAX_SIZE_MB = 25
@@ -66,7 +67,7 @@ export default function UploadBidPage() {
       const formData = new FormData();
       formData.append('file', validFiles[0].file); // Backend expects one file right now
       
-      const response = await fetch('http://localhost:8000/api/v1/bids/upload', {
+      const response = await fetch(`${AI_API_BASE_URL}/api/v1/bids/upload`, {
         method: 'POST',
         body: formData,
       });

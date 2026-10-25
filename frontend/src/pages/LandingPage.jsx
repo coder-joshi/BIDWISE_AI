@@ -1,10 +1,23 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   ShieldCheck, FileText, Search, Activity, Users, FileCheck2, BarChart, ExternalLink, ArrowRight, BookOpen, FileWarning, Globe, Building2
 } from 'lucide-react'
 import Navbar from '../components/layout/Navbar'
 
+const ALL_TENDERS = [
+  { id: 'GeM/2026/TENDER/005821', title: 'Supply and Installation of Solar Panels (500KW) for Central Secretariat', due: 'Oct 15, 2026', org: 'Ministry of Railways' },
+  { id: 'GeM/2026/TENDER/006192', title: 'Procurement of High-Speed Servers for Data Center Expansion', due: 'Oct 22, 2026', org: 'MeitY' },
+  { id: 'GeM/2026/TENDER/007304', title: 'Annual Maintenance Contract for CCTV Surveillance Systems', due: 'Nov 01, 2026', org: 'Home Ministry' },
+  { id: 'GeM/2026/TENDER/008149', title: 'High-Capacity Network Switches & Optical Transceivers for RailTel', due: 'Nov 12, 2026', org: 'Ministry of Railways' },
+  { id: 'GeM/2026/TENDER/008455', title: 'Automated Document Scanners and High-Resolution Biometric Readers', due: 'Nov 18, 2026', org: 'UIDAI' },
+  { id: 'GeM/2026/TENDER/009012', title: 'Cloud Infrastructure Management & Threat Intelligence Platform', due: 'Nov 25, 2026', org: 'NIC / MeitY' },
+]
+
 export default function LandingPage() {
+  const [showAllTenders, setShowAllTenders] = useState(false)
+  const displayedTenders = showAllTenders ? ALL_TENDERS : ALL_TENDERS.slice(0, 3)
+
   return (
     <div className="min-h-screen bg-[#f8f9fa] selection:bg-[#003c8f] selection:text-white flex flex-col font-body text-[#212529]">
       <Navbar />
@@ -61,8 +74,8 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* Info Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Info Grid / Guidelines Section */}
+        <section id="guidelines" className="grid grid-cols-1 md:grid-cols-3 gap-6 scroll-mt-24">
           <div className="bg-white border border-[#dee2e6] rounded-xl p-6 shadow-sm">
             <div className="w-10 h-10 rounded bg-[#e3f2fd] text-[#003c8f] flex items-center justify-center mb-4">
               <Activity size={20} />
@@ -92,24 +105,23 @@ export default function LandingPage() {
               Generates printable, immutable audit-ready reports instantly for procurement officers to review and approve.
             </p>
           </div>
-        </div>
+        </section>
 
-        {/* Public Tenders (Mock) */}
-        <div className="bg-white border border-[#dee2e6] rounded-xl overflow-hidden shadow-sm">
+        {/* Public Tenders Section */}
+        <section id="tenders" className="bg-white border border-[#dee2e6] rounded-xl overflow-hidden shadow-sm scroll-mt-24">
           <div className="bg-[#003c8f] text-white px-6 py-4 flex items-center justify-between">
             <h3 className="font-display font-bold text-lg flex items-center gap-2">
               <FileText size={20} /> Active Public Tenders
             </h3>
-            <button className="text-sm font-bold text-[#e3f2fd] hover:text-white flex items-center gap-1 transition-colors">
-              View All <ExternalLink size={14} />
+            <button
+              onClick={() => setShowAllTenders(!showAllTenders)}
+              className="text-sm font-bold text-[#e3f2fd] hover:text-white flex items-center gap-1 transition-colors px-3 py-1 rounded hover:bg-[#ffffff15]"
+            >
+              {showAllTenders ? 'Show Top 3' : 'View All (6)'} <ExternalLink size={14} />
             </button>
           </div>
           <div className="divide-y divide-[#dee2e6]">
-            {[
-              { id: 'GeM/2026/TENDER/005821', title: 'Supply and Installation of Solar Panels (500KW) for Central Secretariat', due: 'Oct 15, 2026', org: 'Ministry of Railways' },
-              { id: 'GeM/2026/TENDER/006192', title: 'Procurement of High-Speed Servers for Data Center Expansion', due: 'Oct 22, 2026', org: 'MeitY' },
-              { id: 'GeM/2026/TENDER/007304', title: 'Annual Maintenance Contract for CCTV Surveillance Systems', due: 'Nov 01, 2026', org: 'Home Ministry' },
-            ].map((tender, i) => (
+            {displayedTenders.map((tender, i) => (
               <div key={i} className="p-4 sm:px-6 hover:bg-[#f8f9fa] transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                   <div className="text-xs font-bold text-[#003c8f] font-mono mb-1">{tender.id}</div>
@@ -125,7 +137,7 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
-        </div>
+        </section>
 
       </main>
 
@@ -142,8 +154,22 @@ export default function LandingPage() {
             SIH 2026 (SIH26100) · Designed for Government of India
           </div>
           <div className="flex gap-4 text-sm text-[#003c8f] font-bold">
-            <a href="#" className="hover:underline">Privacy Policy</a>
-            <a href="#" className="hover:underline">Terms of Use</a>
+            <a
+              href="https://gem.gov.in/privacy-policy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline"
+            >
+              Privacy Policy
+            </a>
+            <a
+              href="https://gem.gov.in/terms-condition"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline"
+            >
+              Terms of Use
+            </a>
           </div>
         </div>
       </footer>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { CheckCircle2, XCircle, Clock, Search, Filter, ShieldCheck, ChevronRight } from 'lucide-react'
+import { AI_API_BASE_URL } from '../../lib/api'
 
 export default function TenderCompliancePage() {
   const [requirements, setRequirements] = useState([])
@@ -7,7 +8,7 @@ export default function TenderCompliancePage() {
 
   // Use a specific bid to show compliance for now (mocked in backend to have complianceRequirements)
   useEffect(() => {
-    fetch('http://localhost:8000/api/v1/bids/BID-2026-0841')
+    fetch(`${AI_API_BASE_URL}/api/v1/bids/BID-2026-0841`)
       .then(res => res.json())
       .then(data => {
         if (data.status === 'success' && data.data.complianceRequirements) {

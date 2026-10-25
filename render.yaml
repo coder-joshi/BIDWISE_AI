@@ -1,0 +1,46 @@
+services:
+  # Node.js Express API & Evaluation Engine
+  - type: web
+    name: bidwise-backend
+    env: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm ci
+    startCommand: node server.js
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: LOG_LEVEL
+        value: info
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: FILE_URL_SECRET
+        generateValue: true
+      - key: CORS_ORIGIN
+        sync: false
+      - key: AI_SERVICE_URL
+        sync: false
+
+  # Python Forensics & Document Verification Microservice
+  - type: web
+    name: bidwise-forensics
+    env: python
+    plan: free
+    rootDir: forensics_verification_service
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port 10000
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: CORS_ORIGINS
+        sync: false

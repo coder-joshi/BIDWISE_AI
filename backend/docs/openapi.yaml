@@ -292,8 +292,185 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiResponse'
 
+  # ── Authentication ─────────────────────────────────────────────────────
+  /auth/register:
+    post:
+      summary: Register a new user account
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, email, password]
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                role:
+                  type: string
+                  enum: [admin, procurement_officer, auditor, bidder]
+      responses:
+        '201':
+          description: User registered successfully
+        '409':
+          description: Email already exists
+
+  /auth/login:
+    post:
+      summary: Authenticate user and issue JWT tokens
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful
+        '401':
+          description: Invalid email or password
+        '403':
+          description: Email not verified
+
+  /auth/logout:
+    post:
+      summary: Revoke refresh token and clear auth cookie
+      responses:
+        '200':
+          description: Logout successful
+        '401':
+          description: Unauthorized
+
+  /auth/me:
+    get:
+      summary: Fetch authenticated user profile
+      responses:
+        '200':
+          description: User profile fetched successfully
+        '401':
+          description: Unauthorized
+
+  /auth/refresh:
+    post:
+      summary: Issue a new access token from refresh token
+      security: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+      responses:
+        '200':
+          description: Token refreshed successfully
+        '401':
+          description: Invalid or missing refresh token
+
+  /auth/forgot-password:
+    post:
+      summary: Request password reset token via email
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: Password reset email sent if account exists
+
+  /auth/verify-email:
+    post:
+      summary: Verify user email address using verification token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token]
+              properties:
+                token:
+                  type: string
+      responses:
+        '200':
+          description: Email verified successfully
+
+  /auth/reset-password:
+    post:
+      summary: Reset password using reset token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token, newPassword]
+              properties:
+                token:
+                  type: string
+                newPassword:
+                  type: string
+      responses:
+        '200':
+          description: Password reset successfully
+
   # ── Tenders & Matrix ───────────────────────────────────────────────────
   /tenders:
+    post:
+      summary: Create a new tender
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [bidNumber, organisation, itemCategory, quantity, estimatedValue, bidEndDate]
+              properties:
+                bidNumber:
+                  type: string
+                organisation:
+                  type: string
+                itemCategory:
+                  type: string
+                quantity:
+                  type: number
+                estimatedValue:
+                  type: number
+                bidEndDate:
+                  type: string
+                  format: date-time
+      responses:
+        '201':
+          description: Tender created successfully
+        '409':
+          description: Tender bidNumber already exists
+
     get:
       summary: List tenders with pagination
       parameters:
@@ -332,6 +509,131 @@ paths:
           description: Invalid ObjectId
         '404':
           description: Tender not found
+
+    patch:
+      summary: Update tender details
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                organisation:
+                  type: string
+                itemCategory:
+                  type: string
+                status:
+                  type: string
+      responses:
+        '200':
+          description: Tender updated successfully
+        '403':
+          description: Only creator or admin can update tender
+        '404':
+          description: Tender not found
+
+  /tenders/{tenderId}/documents:
+    post:
+      summary: Upload tender specification document
+      parameters:
+        - in: path
+          name: tenderId
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                documents:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        '201':
+          description: Tender document uploaded successfully
+        '400':
+          description: Invalid tenderId or missing file
+        '404':
+          description: Tender not found
+
+  /bids/{bidId}/documents:
+    post:
+      summary: Upload documents for a bid
+      parameters:
+        - in: path
+          name: bidId
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                documents:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        '201':
+          description: Bid documents uploaded successfully
+        '400':
+          description: Invalid bidId or unsupported file
+        '409':
+          description: Duplicate document SHA-256 within same bid
+
+    get:
+      summary: List all uploaded documents for a bid
+      parameters:
+        - in: path
+          name: bidId
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+      responses:
+        '200':
+          description: Bid documents fetched successfully
+        '400':
+          description: Invalid bidId
+        '404':
+          description: Bid not found
+
+  /documents/{id}:
+    delete:
+      summary: Delete a document from disk and database
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+      responses:
+        '200':
+          description: Document deleted successfully
+        '400':
+          description: Cannot delete document while bid is processing
+        '404':
+          description: Document not found
 
   /tenders/{id}/matrix:
     get:

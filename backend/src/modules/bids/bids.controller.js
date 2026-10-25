@@ -16,7 +16,8 @@ const upload = async (req, res) => {
 };
 
 const getAll = async (req, res) => {
-  const bids = await bidsService.getAllBids();
+  const query = req.validated?.query || req.query;
+  const bids = await bidsService.getAllBids(query);
   apiResponse.ok(res, "Bids fetched successfully", bids);
 };
 

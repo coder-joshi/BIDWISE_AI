@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { ShieldAlert, Activity, AlertTriangle, ShieldCheck, PieChart, Info } from 'lucide-react'
+import { AI_API_BASE_URL } from '../../lib/api'
 
 function RiskGauge({ score }) {
   const angle = (score / 100) * 180 - 90
@@ -55,7 +56,7 @@ export default function RiskAnalysisPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/v1/bids/BID-2026-0841')
+    fetch(`${AI_API_BASE_URL}/api/v1/bids/BID-2026-0841`)
       .then(res => res.json())
       .then(data => {
         if (data.status === 'success') {

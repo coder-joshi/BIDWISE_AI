@@ -11,7 +11,6 @@ import {
   authLimiter,
 } from "./common/middleware/rate-limit.middleware.js";
 import authRoutes from "./modules/auth/auth.routes.js";
-import cartRoutes from "./modules/cart/cart.routes.js";
 import bidRoutes from "./modules/bids/bids.routes.js";
 import tenderRoutes from "./modules/tenders/tenders.routes.js";
 import documentRoutes from "./modules/documents/documents.routes.js";
@@ -39,7 +38,7 @@ app.use(httpLogger);
 
 // Serve Swagger UI documentation at /api/docs
 try {
-  const openapiPath = path.resolve(process.cwd(), "docs/openapi.yaml");
+  const openapiPath = path.resolve(import.meta.dirname, "../docs/openapi.yaml");
   const swaggerDocument = YAML.load(openapiPath);
   app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 } catch (err) {
@@ -68,9 +67,13 @@ app.use(
 );
 
 app.use(generalLimiter);
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "100kb" }));
+app.use(express.urlencoded({ extended: true, limit: "100kb" }));
 app.use(cookieParser());
+
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "healthy", service: "BidWise Backend API" });
+});
 
 app.get("/api/v1/health", (req, res) => {
   res.status(200).json({
@@ -86,7 +89,6 @@ app.get("/api/v1/health", (req, res) => {
 });
 
 app.use("/api/v1/auth", authLimiter, authRoutes);
-app.use("/api/v1/cart", cartRoutes);
 app.use("/api/v1/tenders", tenderRoutes);
 app.use("/api/v1/bids", bidRoutes);
 app.use("/api/v1/documents", documentRoutes);

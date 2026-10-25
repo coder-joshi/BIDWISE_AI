@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { Send, Bot, User, Sparkles, AlertCircle, FileSearch, Scale } from 'lucide-react'
+import { AI_API_BASE_URL } from '../../lib/api'
 
 const QUICK_PROMPTS = [
   { icon: AlertCircle, text: 'Why did Rajveer Tech fail?' },
@@ -38,7 +39,7 @@ export default function AiAssistantPage() {
     setLoading(true)
 
     try {
-      const res = await fetch('http://localhost:8000/api/v1/chat', {
+      const res = await fetch(`${AI_API_BASE_URL}/api/v1/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query })

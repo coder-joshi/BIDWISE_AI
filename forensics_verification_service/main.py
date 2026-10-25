@@ -34,11 +34,20 @@ async def add_process_time_header(request, call_next):
     return response
 
 
+ALLOWED_ORIGINS = [
+    origin.strip()
+    for origin in os.environ.get(
+        "CORS_ORIGINS",
+        "http://localhost:5173,http://localhost:4000,http://127.0.0.1:5173,http://127.0.0.1:4000",
+    ).split(",")
+    if origin.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],            # tighten to the real frontend origin(s) before a public deployment
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["*"],
     expose_headers=["X-Process-Time-Ms"],
 )

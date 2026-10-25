@@ -4,6 +4,7 @@ import { Badge, StatusBadge } from '../../components/ui/Badge'
 import { Button } from '../../components/ui/Button'
 import { useNavigate } from 'react-router-dom'
 import { useUIStore } from '../../store/uiStore'
+import { AI_API_BASE_URL } from '../../lib/api'
 
 const DOCUMENTS = [
   { id: 'gst', name: 'GST Registration Certificate', number: '27AABCB1234F1Z5', issuer: 'GSTN Portal', status: 'verified', extractedOn: '2026-08-28', validUntil: 'Perpetual' },
@@ -21,7 +22,7 @@ export default function ExtractedDocumentsPage() {
   const [bidder, setBidder] = useState({ name: 'Loading...', id: '...' })
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/v1/bids/BID-2026-0841')
+    fetch(`${AI_API_BASE_URL}/api/v1/bids/BID-2026-0841`)
       .then(res => res.json())
       .then(data => {
         if (data.status === 'success' && data.data) {

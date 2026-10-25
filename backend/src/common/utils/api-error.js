@@ -22,10 +22,6 @@ class ApiError extends Error {
     return new ApiError(409, msg);
   }
 
-  static notfound(msg = "Not Found") {
-    return new ApiError(404, msg);
-  }
-
   static notFound(msg = "Not Found") {
     return new ApiError(404, msg);
   }

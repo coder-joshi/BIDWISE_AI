@@ -1,6 +1,6 @@
 import Document from "../documents/document.model.js";
 import Clause from "../clauses/clause.model.js";
-import ClauseEvaluation from "../evaluations/evaluation.model.js";
+import ClauseEvaluation, { normalizeBbox } from "../evaluations/evaluation.model.js";
 import * as aiClient from "../integrations/ai.client.js";
 import { EVALUATION_STATUSES, DOCUMENT_PROCESSING_STATUSES } from "../../common/constants/statuses.js";
 import { logger } from "../../common/config/logger.js";
@@ -59,14 +59,15 @@ export async function runAnalyzeStage(context) {
         if (found) docId = found._id;
       }
 
+      const normalizedBbox = normalizeBbox(ev.bbox);
       return {
         document: docId,
         page: ev.page || 1,
         bbox: {
-          x: ev.bbox?.x ?? 0.1,
-          y: ev.bbox?.y ?? 0.1,
-          w: ev.bbox?.w ?? 0.8,
-          h: ev.bbox?.h ?? 0.1,
+          x: normalizedBbox?.x ?? 0.1,
+          y: normalizedBbox?.y ?? 0.1,
+          w: normalizedBbox?.w ?? 0.8,
+          h: normalizedBbox?.h ?? 0.1,
         },
         snippet: ev.snippet || "",
       };

@@ -3,6 +3,8 @@ import Bid from "./bids.model.js";
 import Tender from "../tenders/tender.model.js";
 import AuditLog from "../audit/audit-log.model.js";
 import ApiError from "../../common/utils/api-error.js";
+import { paginate } from "../../common/utils/paginate.js";
+import * as documentsService from "../documents/documents.service.js";
 
 /**
  * Helper to resolve a Bid query by MongoDB ObjectId or string tenderId.
@@ -73,13 +75,28 @@ export const getBidsByTender = async (tenderId) => {
 };
 
 /**
- * List all bids with compatibility fields for the frontend.
+ * List all bids with pagination and compatibility fields for the frontend.
  */
-export const getAllBids = async () => {
-  const bids = await Bid.find().sort({ createdAt: -1 });
+export const getAllBids = async ({ page = 1, limit = 10, status, search } = {}) => {
+  const filter = {};
+  if (status) {
+    filter.status = status;
+  }
+  if (search) {
+    filter.$or = [
+      { tenderId: { $regex: search, $options: "i" } },
+      { bidderName: { $regex: search, $options: "i" } },
+    ];
+  }
 
-  return bids.map((b) => {
-    const obj = b.toObject();
+  const paginatedResult = await paginate(Bid, filter, {
+    page,
+    limit,
+    sort: { createdAt: -1 },
+  });
+
+  const items = paginatedResult.items.map((b) => {
+    const obj = typeof b.toObject === "function" ? b.toObject() : b;
     return {
       ...obj,
       id: obj._id.toString(),
@@ -92,6 +109,11 @@ export const getAllBids = async () => {
       createdAt: obj.createdAt,
     };
   });
+
+  return {
+    ...paginatedResult,
+    items,
+  };
 };
 
 /**
@@ -222,6 +244,21 @@ export const createBid = async ({
     uploadedBy,
   });
 
+  let uploadedDocuments = [];
+  if (files && files.length > 0) {
+    try {
+      uploadedDocuments = await documentsService.uploadBidDocuments(
+        bid._id,
+        files,
+        [],
+        uploadedBy
+      );
+    } catch (err) {
+      await Bid.findByIdAndDelete(bid._id);
+      throw err;
+    }
+  }
+
   await AuditLog.create({
     actor: uploadedBy,
     action: "BID_CREATE",
@@ -230,7 +267,7 @@ export const createBid = async ({
     meta: {
       tenderId: tender.bidNumber,
       bidderName: bid.bidderName,
-      fileCount: files.length,
+      fileCount: uploadedDocuments.length,
     },
   });
 
@@ -238,5 +275,6 @@ export const createBid = async ({
   return {
     ...obj,
     id: obj._id.toString(),
+    documents: uploadedDocuments,
   };
 };

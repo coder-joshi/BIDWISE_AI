@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import crypto from "crypto";
+import { logger } from "../../common/config/logger.js";
 
 const UPLOAD_ROOT = path.resolve(process.cwd(), process.env.UPLOAD_DIR || "uploads");
 
@@ -32,9 +33,10 @@ export const resolveSafePath = (storageKey) => {
   }
 
   const safePath = path.resolve(UPLOAD_ROOT, storageKey);
+  const relative = path.relative(UPLOAD_ROOT, safePath);
 
-  // Assert path stays within upload root
-  if (!safePath.startsWith(UPLOAD_ROOT)) {
+  // Assert path stays strictly inside upload root
+  if (!relative || relative.startsWith("..") || path.isAbsolute(relative)) {
     throw new Error("Path traversal detected");
   }
 
@@ -140,7 +142,7 @@ class LocalDiskStorageService {
       }
     } catch (err) {
       // Best-effort cleanup
-      console.error(`Failed to remove file at storage key: ${storageKey}`, err);
+      logger.error({ err, storageKey }, `Failed to remove file at storage key: ${storageKey}`);
     }
   }
 

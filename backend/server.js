@@ -12,7 +12,7 @@ const start = async () => {
   // Start in-process background job queue worker
   startWorker();
 
-  const server = app.listen(PORT, () => {
+  const server = app.listen(PORT, "0.0.0.0", () => {
     console.log(
       `Server is running at PORT: ${PORT} in ${process.env.NODE_ENV} mode`,
     );

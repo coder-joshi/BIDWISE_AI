@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { AlertTriangle, AlertOctagon, Info, ShieldAlert, Activity, Search, Filter, Fingerprint, MapPin } from 'lucide-react'
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip } from 'recharts'
+import { AI_API_BASE_URL } from '../../lib/api'
 
 const SEV_CONFIG = {
   high:   { label: 'High',   color: 'text-[#721c24]',     bg: 'bg-[#f8d7da]',   border: 'border-[#f5c6cb]',   Icon: AlertOctagon },
@@ -20,7 +21,7 @@ export default function FraudDetectionPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/v1/bids/')
+    fetch(`${AI_API_BASE_URL}/api/v1/bids/`)
       .then(res => res.json())
       .then(data => {
         if (data.status === 'success') {

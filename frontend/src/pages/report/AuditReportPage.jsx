@@ -1,5 +1,6 @@
 import { Download, CheckCircle2, Shield, Hash, FileCheck, Info, XCircle } from 'lucide-react'
 import { useState, useEffect } from 'react'
+import { AI_API_BASE_URL } from '../../lib/api'
 
 export default function AuditReportPage() {
   const [bidder, setBidder] = useState(null)
@@ -9,7 +10,7 @@ export default function AuditReportPage() {
   const [isGenerating, setIsGenerating] = useState(true)
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/v1/bids/BID-2026-0841')
+    fetch(`${AI_API_BASE_URL}/api/v1/bids/BID-2026-0841`)
       .then(res => res.json())
       .then(data => {
         if (data.status === 'success') {

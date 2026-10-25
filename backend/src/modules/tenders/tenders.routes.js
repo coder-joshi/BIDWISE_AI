@@ -4,6 +4,7 @@ import validateDto from "../../common/middleware/validate.middleware.js";
 import { uploadDocumentsMiddleware } from "../../common/middleware/upload.middleware.js";
 import {
   ObjectIdParamDto,
+  TenderIdParamDto,
   PaginationQueryDto,
 } from "../../common/dto/params.dto.js";
 import CreateTenderDto from "./dto/create-tender.dto.js";
@@ -31,6 +32,7 @@ router.patch(
 // Tender document upload
 router.post(
   "/:tenderId/documents",
+  validateDto(TenderIdParamDto, "params"),
   uploadDocumentsMiddleware("documents", 10),
   documentsController.uploadTenderDocument
 );

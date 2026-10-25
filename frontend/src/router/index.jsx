@@ -28,6 +28,7 @@ import AdminPanelPage from '../pages/admin/AdminPanelPage'
 import AiAssistantPage from '../pages/chat/AiAssistantPage'
 import ProfilePage from '../pages/profile/ProfilePage'
 import SettingsPage from '../pages/settings/SettingsPage'
+import NotFoundPage from '../pages/NotFoundPage'
 
 // Private route guard
 function PrivateRoute({ children }) {
@@ -67,6 +68,9 @@ const router = createBrowserRouter([
       { path: 'settings',     element: <SettingsPage /> },
     ],
   },
+
+  // 404 Catch-all
+  { path: '*', element: <NotFoundPage /> },
 ])
 
 export default function AppRouter() {

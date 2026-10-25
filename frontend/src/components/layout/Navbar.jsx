@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom'
 import { ShieldCheck, Menu, X, ChevronRight } from 'lucide-react'
 
 const NAV_LINKS = [
-  { label: 'Tenders',     href: '#' },
-  { label: 'Guidelines', href: '#' },
-  { label: 'About GeM',        href: '#' },
+  { label: 'Tenders',    href: '#tenders', external: false },
+  { label: 'Guidelines', href: '#guidelines', external: false },
+  { label: 'About GeM',   href: 'https://gem.gov.in/aboutus', external: true },
 ]
 
 export default function Navbar() {
@@ -43,6 +43,8 @@ export default function Navbar() {
               <a
                 key={link.label}
                 href={link.href}
+                target={link.external ? '_blank' : undefined}
+                rel={link.external ? 'noopener noreferrer' : undefined}
                 className="px-4 py-2 text-sm font-bold font-body text-[#495057] hover:text-[#003c8f] transition-colors rounded hover:bg-[#e3f2fd]"
               >
                 {link.label}
@@ -76,6 +78,8 @@ export default function Navbar() {
               <a
                 key={link.label}
                 href={link.href}
+                target={link.external ? '_blank' : undefined}
+                rel={link.external ? 'noopener noreferrer' : undefined}
                 className="px-4 py-3 text-sm font-bold font-body text-[#495057] hover:text-[#003c8f] hover:bg-[#e3f2fd] rounded transition-colors"
                 onClick={() => setMobileOpen(false)}
               >

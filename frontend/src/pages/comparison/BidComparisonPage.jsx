@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { CheckCircle2, XCircle, Award, BarChart2, ShieldAlert, Zap } from 'lucide-react'
 import { StatusBadge } from '../../components/ui/Badge'
+import { AI_API_BASE_URL } from '../../lib/api'
 
 const ROWS = [
   { label: 'Compliance Score', key: 'complianceScore', unit: '/100', icon: CheckCircle2, color: 'text-[#003c8f]' },
@@ -41,7 +42,7 @@ export default function BidComparisonPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/v1/bids/')
+    fetch(`${AI_API_BASE_URL}/api/v1/bids/`)
       .then(res => res.json())
       .then(data => {
         if (data.status === 'success') {

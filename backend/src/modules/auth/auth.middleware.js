@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import ApiError from "../../common/utils/api-error.js";
 import { verifyAccessToken } from "../../common/utils/jwt.utils.js";
 
@@ -11,6 +12,9 @@ const authenticate = async (req, res, next) => {
 
   if (!token) throw ApiError.unauthorized("Not authenticated");
   const decoded = verifyAccessToken(token);
+  if (!decoded?.id || !mongoose.Types.ObjectId.isValid(decoded.id)) {
+    throw ApiError.unauthorized("Invalid token payload");
+  }
   const user = await User.findById(decoded.id);
 
   if (!user) throw ApiError.unauthorized("User no longer exists");

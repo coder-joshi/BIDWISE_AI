@@ -7,6 +7,7 @@ export default class UpdateTecNoteDto extends BaseDto {
     content: Joi.string()
       .trim()
       .min(1)
+      .max(20000)
       .required()
       .messages({
         "string.empty": "TEC note content cannot be empty",

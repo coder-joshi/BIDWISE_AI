@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { CheckCircle2, XCircle, Wifi, WifiOff } from 'lucide-react'
 import { Badge } from '../../components/ui/Badge'
+import { AI_API_BASE_URL } from '../../lib/api'
 
 const GOV_DATABASES = [
   { id: 'gstn',     name: 'GSTN Portal',    description: 'GST Network verification', icon: '🏛️', status: 'active' },
@@ -26,7 +27,7 @@ export default function GovVerificationPage() {
   const [bidder, setBidder] = useState({ name: 'Loading...' })
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/v1/bids/BID-2026-0841')
+    fetch(`${AI_API_BASE_URL}/api/v1/bids/BID-2026-0841`)
       .then(res => res.json())
       .then(data => {
         if (data.status === 'success' && data.data) {

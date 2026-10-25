@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#002244" />
+      <stop offset="50%" stop-color="#003c8f" />
+      <stop offset="100%" stop-color="#001830" />
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ff9933" />
+      <stop offset="50%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#138808" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)" />
+
+  <!-- Tricolor Accent Top Bar -->
+  <rect x="0" y="0" width="1200" height="12" fill="url(#gold)" />
+
+  <!-- Decorative Grid Overlay -->
+  <g opacity="0.06" stroke="#ffffff" stroke-width="1">
+    <line x1="100" y1="0" x2="100" y2="630" />
+    <line x1="300" y1="0" x2="300" y2="630" />
+    <line x1="500" y1="0" x2="500" y2="630" />
+    <line x1="700" y1="0" x2="700" y2="630" />
+    <line x1="900" y1="0" x2="900" y2="630" />
+    <line x1="1100" y1="0" x2="1100" y2="630" />
+    <line x1="0" y1="100" x2="1200" y2="100" />
+    <line x1="0" y1="200" x2="1200" y2="200" />
+    <line x1="0" y1="300" x2="1200" y2="300" />
+    <line x1="0" y1="400" x2="1200" y2="400" />
+    <line x1="0" y1="500" x2="1200" y2="500" />
+  </g>
+
+  <!-- Content Container -->
+  <g transform="translate(100, 100)">
+    <!-- Pill Badge -->
+    <rect x="0" y="0" width="340" height="38" rx="6" fill="#ffffff" fill-opacity="0.12" stroke="#ffffff" stroke-opacity="0.25" />
+    <text x="18" y="24" font-family="'Space Grotesk', -apple-system, sans-serif" font-size="14" font-weight="700" fill="#ff9933" letter-spacing="1.5">GOVERNMENT E-MARKETPLACE</text>
+
+    <!-- Main Title -->
+    <text x="0" y="110" font-family="'Space Grotesk', -apple-system, sans-serif" font-size="56" font-weight="800" fill="#ffffff" letter-spacing="-1">
+      GeM BidVerify
+    </text>
+    <text x="0" y="170" font-family="'Space Grotesk', -apple-system, sans-serif" font-size="34" font-weight="600" fill="#93c5fd">
+      AI-Powered Integrated Bid Compliance Platform
+    </text>
+
+    <!-- Subtitle / Description -->
+    <text x="0" y="240" font-family="'Inter', -apple-system, sans-serif" font-size="20" fill="#cbd5e1">
+      Automated document forensics, statutory GST/UDIN verification,
+    </text>
+    <text x="0" y="272" font-family="'Inter', -apple-system, sans-serif" font-size="20" fill="#cbd5e1">
+      clause-by-clause tender matrix evaluation, and audit-ready TEC reports.
+    </text>
+
+    <!-- Badges Row -->
+    <g transform="translate(0, 340)">
+      <rect x="0" y="0" width="220" height="48" rx="8" fill="#138808" fill-opacity="0.25" stroke="#138808" stroke-width="1.5" />
+      <text x="24" y="30" font-family="'Space Grotesk', -apple-system, sans-serif" font-size="16" font-weight="700" fill="#4ade80">✓ 97.4% Forensic Accuracy</text>
+
+      <rect x="240" y="0" width="220" height="48" rx="8" fill="#ff9933" fill-opacity="0.2" stroke="#ff9933" stroke-width="1.5" />
+      <text x="264" y="30" font-family="'Space Grotesk', -apple-system, sans-serif" font-size="16" font-weight="700" fill="#fdba74">⚡ &lt;30s Batch Evaluation</text>
+
+      <rect x="480" y="0" width="240" height="48" rx="8" fill="#3b82f6" fill-opacity="0.2" stroke="#3b82f6" stroke-width="1.5" />
+      <text x="504" y="30" font-family="'Space Grotesk', -apple-system, sans-serif" font-size="16" font-weight="700" fill="#93c5fd">🛡 SIH 2026 (SIH26100)</text>
+    </g>
+  </g>
+</svg>

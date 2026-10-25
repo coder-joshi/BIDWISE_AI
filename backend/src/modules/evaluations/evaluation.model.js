@@ -10,6 +10,13 @@ import {
 
 const { Schema } = mongoose;
 
+export const normalizeBbox = (bbox) => {
+  if (Array.isArray(bbox) && bbox.length === 4) {
+    return { x: bbox[0], y: bbox[1], w: bbox[2], h: bbox[3] };
+  }
+  return bbox;
+};
+
 const bboxSchema = new Schema(
   {
     x: { type: Number, required: true, min: 0, max: 1 },
@@ -35,6 +42,7 @@ const evidenceSchema = new Schema(
     bbox: {
       type: bboxSchema,
       required: true,
+      set: normalizeBbox,
     },
     snippet: {
       type: String,
@@ -166,6 +174,8 @@ const clauseEvaluationSchema = new Schema(
 clauseEvaluationSchema.index({ bid: 1, clause: 1 }, { unique: true });
 // Matrix queries: load all evaluations for a tender
 clauseEvaluationSchema.index({ tender: 1 });
+// Matrix KPI queries: filter evaluations for a tender by compliance status
+clauseEvaluationSchema.index({ tender: 1, status: 1 });
 // Filter evaluations for a specific bid by compliance status
 clauseEvaluationSchema.index({ bid: 1, status: 1 });
 // Find all bids evaluated against a specific clause

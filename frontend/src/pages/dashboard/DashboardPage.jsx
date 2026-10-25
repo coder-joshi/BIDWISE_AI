@@ -3,9 +3,10 @@ import { LayoutDashboard, TrendingUp, FileCheck, AlertTriangle, Zap, Activity, A
 import { StatusBadge } from '../../components/ui/Badge'
 import { Link } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
+import { AI_API_BASE_URL } from '../../lib/api'
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
-  Tooltip, ResponsiveContainer, Legend
+  Tooltip, ResponsiveContainer, Legend, Cell
 } from 'recharts'
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null
@@ -32,8 +33,8 @@ export default function DashboardPage() {
     const fetchData = async () => {
       try {
         const [bidsRes, dashRes] = await Promise.all([
-          fetch('http://localhost:8000/api/v1/bids/'),
-          fetch('http://localhost:8000/api/v1/dashboard/')
+          fetch(`${AI_API_BASE_URL}/api/v1/bids/`),
+          fetch(`${AI_API_BASE_URL}/api/v1/dashboard/`)
         ])
         
         const bidsData = await bidsRes.json()
@@ -72,7 +73,7 @@ export default function DashboardPage() {
       icon: FileCheck,
       color: 'text-[#003c8f]',
       bg: 'bg-[#e3f2fd]',
-      trend: '+12 this month',
+      trend: `${totalBids} in system`,
       trendUp: true,
     },
     {
@@ -159,7 +160,7 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h3 className="font-display font-bold text-gray-900 text-lg m-0">Activity Overview</h3>
-              <p className="text-sm text-gray-500 mt-1 m-0">Verified vs Failed vs Pending (Mock Data for Chart)</p>
+              <p className="text-sm text-gray-500 mt-1 m-0">Verified vs Failed vs Pending</p>
             </div>
             <div className="px-3 py-1 text-xs font-medium bg-gray-100 border border-gray-200 rounded-full text-gray-600">
               Last 6 months
@@ -181,7 +182,11 @@ export default function DashboardPage() {
               <XAxis dataKey="month" tick={{ fill: '#4b5563', fontSize: 12 }} axisLine={false} tickLine={false} dy={10} />
               <YAxis tick={{ fill: '#4b5563', fontSize: 12 }} axisLine={false} tickLine={false} dx={-10} />
               <Tooltip content={<CustomTooltip />} />
-              <Legend wrapperStyle={{ fontSize: '12px', paddingTop: '20px', color: '#4b5563' }} iconType="circle" />
+              <Legend 
+                wrapperStyle={{ fontSize: '12px', paddingTop: '20px' }} 
+                iconType="circle" 
+                formatter={(value) => <span className="text-gray-700 font-medium capitalize">{value}</span>}
+              />
               <Area type="monotone" dataKey="verified" stroke="#138808" fill="url(#gradVerified)" strokeWidth={2} dot={{ r: 3, fill: '#138808', strokeWidth: 0 }} activeDot={{ r: 5 }} />
               <Area type="monotone" dataKey="failed" stroke="#dc3545" fill="url(#gradFailed)" strokeWidth={2} dot={{ r: 3, fill: '#dc3545', strokeWidth: 0 }} activeDot={{ r: 5 }} />
               <Area type="monotone" dataKey="pending" stroke="#f59e0b" fill="none" strokeWidth={2} strokeDasharray="4 4" dot={false} />
@@ -193,7 +198,7 @@ export default function DashboardPage() {
         <div className="bg-white border border-gray-200 rounded p-6 shadow-sm">
           <div className="mb-6">
             <h3 className="font-display font-bold text-gray-900 text-lg m-0">Risk Distribution</h3>
-            <p className="text-sm text-gray-500 mt-1 m-0">Current active bids (Mock Data)</p>
+            <p className="text-sm text-gray-500 mt-1 m-0">Current active bids</p>
           </div>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={dashboardData?.riskDistribution || []} layout="vertical" margin={{ top: 0, right: 10, left: 10, bottom: 0 }}>
@@ -202,7 +207,7 @@ export default function DashboardPage() {
               <Tooltip content={<CustomTooltip />} cursor={{ fill: '#f3f4f6' }} />
               <Bar dataKey="count" radius={[0, 4, 4, 0]} barSize={24}>
                 {(dashboardData?.riskDistribution || []).map((entry, i) => (
-                  <rect key={i} fill={entry.color} />
+                  <Cell key={i} fill={entry.color} />
                 ))}
               </Bar>
             </BarChart>

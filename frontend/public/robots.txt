@@ -1,0 +1,7 @@
+# GeM BidVerify - Government e-Marketplace Robots Policy
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api/
+
+Sitemap: https://gem-bidverify.gov.in/sitemap.xml

@@ -7,13 +7,14 @@ import LoginDto from "./dto/login.dto.js";
 import ForgotPasswordDto from "./dto/forgot-password.dto.js";
 import VerifyEmailDto from "./dto/verify-email.dto.js";
 import ResetPasswordDto from "./dto/reset-password.dto.js";
+import RefreshTokenDto from "./dto/refresh-token.dto.js";
 const router = Router();
 
 router.post("/register", validateDto(RegisterDto), controller.register);
 router.post("/login", validateDto(LoginDto), controller.login);
 router.post("/logout", authenticate, controller.logout);
 router.get("/me", authenticate, controller.getMe);
-router.post("/refresh", controller.refresh);
+router.post("/refresh", validateDto(RefreshTokenDto), controller.refresh);
 router.post(
   "/forgot-password",
   validateDto(ForgotPasswordDto),

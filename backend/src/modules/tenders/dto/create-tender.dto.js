@@ -4,9 +4,9 @@ import { TENDER_STATUS_VALUES } from "../../../common/constants/statuses.js";
 
 export class CreateTenderDto extends BaseDto {
   static schema = Joi.object({
-    bidNumber: Joi.string().trim().uppercase().required(),
-    organisation: Joi.string().trim().required(),
-    itemCategory: Joi.string().trim().required(),
+    bidNumber: Joi.string().trim().uppercase().min(3).max(100).required(),
+    organisation: Joi.string().trim().min(2).max(200).required(),
+    itemCategory: Joi.string().trim().min(2).max(200).required(),
     quantity: Joi.number().integer().min(1).required(),
     estimatedValue: Joi.number().min(0).required(),
     bidEndDate: Joi.date().iso().required(),
