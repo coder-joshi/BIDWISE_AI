@@ -25,9 +25,9 @@ services:
       - key: FILE_URL_SECRET
         generateValue: true
       - key: CORS_ORIGIN
-        sync: false
+        sync: false # your Vercel URL, e.g. https://bidwise.vercel.app
       - key: AI_SERVICE_URL
-        sync: false
+        sync: false # URL of bidwise-forensics or bidwise-chat, whichever the Node code calls
 
   # Python Forensics & Document Verification Microservice
   - type: web
@@ -44,3 +44,23 @@ services:
         value: 3.11.9
       - key: CORS_ORIGINS
         sync: false
+      - key: GEMINI_API_KEY
+        sync: false # only needed if this service calls Gemini
+
+  # Python FastAPI: Gemini chat (+ bid upload once migrated)
+  - type: web
+    name: bidwise-chat
+    env: python
+    plan: free
+    rootDir: python-backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port 10000
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false # your Vercel URL
