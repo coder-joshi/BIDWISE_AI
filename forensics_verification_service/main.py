@@ -24,6 +24,10 @@ TEMP_TTL_SECONDS = 3600           # heatmaps older than this are deleted
 
 app = FastAPI(title="Forensics & Verification API", version="1.1")
 
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
+
 
 # ---------------------------------------------------------------- middleware and errors
 @app.middleware("http")
