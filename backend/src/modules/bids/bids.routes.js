@@ -58,7 +58,8 @@ router.post(
 );
 router.get("/:bidId/documents", validateDto(BidIdParamDto, "params"), documentsController.getBidDocuments);
 
-// Bid CRUD
+// Bid CRUD & Dynamic Dashboard
+router.get("/dashboard", controller.getDashboard);
 router.get("/", validateDto(PaginationQueryDto, "query"), controller.getAll);
 router.get("/:id", validateDto(ObjectIdParamDto, "params"), controller.getById);
 router.patch(

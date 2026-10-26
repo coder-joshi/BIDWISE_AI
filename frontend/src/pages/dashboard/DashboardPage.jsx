@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
 import { LayoutDashboard, TrendingUp, FileCheck, AlertTriangle, Zap, Activity, ArrowUpRight } from 'lucide-react'
 import { StatusBadge } from '../../components/ui/Badge'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
-import { AI_API_BASE_URL } from '../../lib/api'
+import { useUIStore } from '../../store/uiStore'
+import { AI_API_BASE_URL, fetchBidsFromDb } from '../../lib/api'
+import { useLanguage } from '../../store/languageStore'
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, Legend, Cell
@@ -24,7 +26,10 @@ const CustomTooltip = ({ active, payload, label }) => {
 }
 
 export default function DashboardPage() {
+  const navigate = useNavigate()
   const { user } = useAuthStore()
+  const { setSelectedBidId } = useUIStore()
+  const { t } = useLanguage()
   const [bids, setBids] = useState([])
   const [dashboardData, setDashboardData] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -32,19 +37,17 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [bidsRes, dashRes] = await Promise.all([
-          fetch(`${AI_API_BASE_URL}/api/v1/bids/`),
-          fetch(`${AI_API_BASE_URL}/api/v1/dashboard/`)
+        const [{ bids: allBids }, dashRes] = await Promise.all([
+          fetchBidsFromDb(),
+          fetch(`${AI_API_BASE_URL}/api/v1/dashboard/`).catch(() => null)
         ])
         
-        const bidsData = await bidsRes.json()
-        const dashData = await dashRes.json()
-        
-        if (bidsData.status === 'success') {
-          setBids(bidsData.data)
-        }
-        if (dashData.status === 'success') {
-          setDashboardData(dashData.data)
+        setBids(allBids)
+        if (dashRes && dashRes.ok) {
+          const dashData = await dashRes.json()
+          if (dashData.status === 'success') {
+            setDashboardData(dashData.data)
+          }
         }
       } catch (err) {
         console.error("Failed to fetch dashboard data:", err)
@@ -68,7 +71,7 @@ export default function DashboardPage() {
 
   const KPI_CARDS = [
     {
-      label: 'Total Bids',
+      label: t('total_bids', 'Total Bids'),
       value: totalBids,
       icon: FileCheck,
       color: 'text-[#003c8f]',
@@ -77,7 +80,7 @@ export default function DashboardPage() {
       trendUp: true,
     },
     {
-      label: 'Pending Verification',
+      label: t('pending_verification', 'Pending Verification'),
       value: pendingBids,
       icon: Activity,
       color: 'text-amber-600',
@@ -86,7 +89,7 @@ export default function DashboardPage() {
       trendUp: false,
     },
     {
-      label: 'Verified Bids',
+      label: t('verified_bids', 'Verified Bids'),
       value: verifiedBids,
       icon: FileCheck,
       color: 'text-green-600',
@@ -95,7 +98,7 @@ export default function DashboardPage() {
       trendUp: true,
     },
     {
-      label: 'High Risk Bids',
+      label: t('high_risk_bids', 'High Risk Bids'),
       value: highRiskBids,
       icon: AlertTriangle,
       color: 'text-red-600',
@@ -229,9 +232,9 @@ export default function DashboardPage() {
       {/* Recent activity */}
       <div className="bg-white border border-gray-200 rounded overflow-hidden shadow-sm">
         <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-gray-50">
-          <h3 className="font-display font-bold text-gray-900 text-lg m-0">Recent Activity</h3>
+          <h3 className="font-display font-bold text-gray-900 text-lg m-0">{t('recent_submissions', 'Recent Activity')}</h3>
           <Link to="/history" className="text-sm text-[#003c8f] hover:underline font-semibold">
-            View all
+            {t('view_all_bids', 'View all')}
           </Link>
         </div>
         <div className="divide-y divide-gray-100">
@@ -243,6 +246,10 @@ export default function DashboardPage() {
             bids.slice(0, 5).map((item) => (
               <div 
                 key={item.id} 
+                onClick={() => {
+                  setSelectedBidId(item.id)
+                  navigate('/risk')
+                }}
                 className="px-6 py-4 flex items-center gap-5 hover:bg-gray-50 transition-colors cursor-pointer"
               >
                 <div className={`w-3 h-3 rounded-full flex-shrink-0 ${

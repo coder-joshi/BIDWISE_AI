@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { getTenderById, getTenderMatrix } from "../src/modules/tenders/tenders.service.js";
+import { buildDynamicRiskAnalysis } from "../src/modules/bids/bids.service.js";
 import Tender from "../src/modules/tenders/tender.model.js";
 import Bid from "../src/modules/bids/bids.model.js";
 import Clause from "../src/modules/clauses/clause.model.js";
@@ -213,4 +214,59 @@ test("Matrix & KPIs - Builds matrix with rows as clauses and columns as bidders"
   // Cell 1,1: bidder2 on clause2 (missing evaluation -> defaults to pending)
   assert.equal(matrix.rows[1].cells[1].status, "pending");
   assert.equal(matrix.rows[1].cells[1].extractedValue, null);
+});
+
+test("Dynamic Risk Analysis - Computes riskFactors, complianceRequirements, fraudAlerts, and aiRecommendation dynamically", () => {
+  const bidObj = {
+    _id: "660c1d2e4f8b9a001f3e7a13",
+    bidderName: "Shivalik_Digitech",
+    tenderId: "GEM/2026/B/5489210",
+    gstNumber: "24AABCS4567E1Z9",
+    panNumber: "AABCS4567E",
+    udyamNumber: "UDYAM-GJ-04-0045678",
+    riskScore: 89,
+    complianceScore: 80,
+  };
+
+  const evaluations = [
+    {
+      _id: "ev1",
+      status: "compliant",
+      extractedValue: "₹26.1 Cr",
+      reasoning: "Turnover satisfied",
+      clause: { code: "ATC 01", title: "Turnover", category: "turnover", requirement: "≥ ₹25 Cr" },
+    },
+    {
+      _id: "ev2",
+      status: "tamper_alert",
+      extractedValue: "Modified Expiry Date (2027-12-31)",
+      reasoning: "Tamper detected in ISO cert",
+      clause: { code: "ATC 05", title: "ISO Validity", category: "bis_iso", requirement: "Valid ISO" },
+    },
+  ];
+
+  const forensicAlerts = [
+    {
+      _id: "fa1",
+      type: "ela",
+      severity: "critical",
+      note: "ELA compression anomaly detected",
+      metadata: { confidence: "medium" },
+      document: { originalName: "Shivalik_ISO_Cert.pdf" },
+    },
+  ];
+
+  const enriched = buildDynamicRiskAnalysis(bidObj, evaluations, forensicAlerts, []);
+
+  assert.equal(enriched.state, "Gujarat");
+  assert.equal(enriched.turnover, "₹26.1 Cr");
+  assert.equal(enriched.complianceRequirements.length, 2);
+  assert.equal(enriched.complianceRequirements[0].status, "pass");
+  assert.equal(enriched.complianceRequirements[1].status, "fail");
+  assert.equal(enriched.fraudAlerts.length, 1);
+  assert.equal(enriched.fraudAlerts[0].type, "ELA Image Tampering");
+  assert.equal(enriched.riskFactors.length, 6);
+  const sumScores = enriched.riskFactors.reduce((s, f) => s + f.score, 0);
+  assert.equal(sumScores, 89);
+  assert.equal(enriched.aiRecommendation.verdict, "REJECT");
 });

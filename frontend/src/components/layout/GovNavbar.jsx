@@ -3,26 +3,27 @@ import { NavLink } from 'react-router-dom';
 import { Home, FileText, Upload, ShieldCheck, Activity, BarChart2, MessageSquare, History } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 
+import { useLanguage } from '../../store/languageStore';
+
 const NAV_ITEMS = [
-  { path: '/dashboard', label: 'Dashboard', icon: Home },
-  { path: '/upload', label: 'Upload Bid', icon: Upload },
-  { path: '/processing', label: 'Processing', icon: Activity },
-  { path: '/compliance', label: 'Compliance', icon: FileText },
-  { path: '/fraud', label: 'Fraud Detection', icon: ShieldCheck },
-  { path: '/risk', label: 'Risk Analysis', icon: BarChart2 },
-  { path: '/history', label: 'Verification History', icon: History },
-  { path: '/ai-assistant', label: 'AI Assistant', icon: MessageSquare },
-  { path: '/admin', label: 'Admin Panel', icon: Activity },
+  { path: '/dashboard', key: 'dashboard', label: 'Dashboard', icon: Home },
+  { path: '/upload', key: 'upload', label: 'Upload Bid', icon: Upload },
+  { path: '/processing', key: 'processing', label: 'Processing', icon: Activity },
+  { path: '/compliance', key: 'compliance', label: 'Compliance', icon: FileText },
+  { path: '/fraud', key: 'fraud', label: 'Fraud Detection', icon: ShieldCheck },
+  { path: '/risk', key: 'risk', label: 'Risk Analysis', icon: BarChart2 },
+  { path: '/history', key: 'history', label: 'Verification History', icon: History },
+  { path: '/ai-assistant', key: 'ai_assistant', label: 'AI Assistant', icon: MessageSquare },
+  { path: '/admin', key: 'admin', label: 'Admin Panel', icon: Activity },
 ];
 
 export default function GovNavbar() {
-  const { user } = useAuthStore();
-  const isAdmin = user?.role === 'admin';
+  const { t } = useLanguage();
 
   return (
     <nav className="bg-[#003c8f] text-white w-full print:hidden">
       <div className="max-w-7xl mx-auto px-4 flex flex-wrap">
-        {NAV_ITEMS.filter(item => item.path !== '/admin' || isAdmin).map((item) => (
+        {NAV_ITEMS.map((item) => (
           <NavLink
             key={item.path}
             to={item.path}
@@ -35,7 +36,7 @@ export default function GovNavbar() {
             }
           >
             <item.icon size={16} />
-            {item.label}
+            {t(item.key, item.label)}
           </NavLink>
         ))}
       </div>

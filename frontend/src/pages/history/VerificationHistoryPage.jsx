@@ -1,34 +1,57 @@
 import { useState, useEffect } from 'react'
-import { Search, Filter, History, ArrowDownToLine, MoreHorizontal } from 'lucide-react'
+import { Search, Filter, History, ArrowDownToLine } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { StatusBadge, RiskBadge } from '../../components/ui/Badge'
-import { AI_API_BASE_URL } from '../../lib/api'
+import { fetchBidsFromDb } from '../../lib/api'
+import { useUIStore } from '../../store/uiStore'
 
 export default function VerificationHistoryPage() {
-  const [query, setQuery] = useState('')
+  const navigate = useNavigate()
+  const { setSelectedBidId, searchQuery, setSearchQuery } = useUIStore()
   const [statusFilter, setStatusFilter] = useState('all')
   const [historyData, setHistoryData] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Fetch real data from python backend
-    fetch(`${AI_API_BASE_URL}/api/v1/bids/`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === 'success') {
-          setHistoryData(data.data)
-        }
+    fetchBidsFromDb()
+      .then(({ bids }) => {
+        setHistoryData(bids)
       })
       .catch(err => console.error("Failed to fetch bids:", err))
       .finally(() => setLoading(false))
   }, [])
 
+  const q = (searchQuery || '').toLowerCase()
   const filtered = historyData.filter((h) => {
-    const matchSearch = h.bidderName.toLowerCase().includes(query.toLowerCase()) ||
-      h.tenderId.toLowerCase().includes(query.toLowerCase()) ||
-      h.id.toLowerCase().includes(query.toLowerCase())
+    const matchSearch =
+      (h.bidderName || '').toLowerCase().includes(q) ||
+      (h.tenderId || '').toLowerCase().includes(q) ||
+      (h.id || '').toLowerCase().includes(q) ||
+      (h.gstNumber || '').toLowerCase().includes(q)
     const matchStatus = statusFilter === 'all' || h.status === statusFilter
     return matchSearch && matchStatus
   })
+
+  const handleExportCsv = () => {
+    const headers = ['Audit ID', 'Bidder Name', 'Tender ID', 'Status', 'Compliance Score (%)', 'Risk Score', 'Date']
+    const rows = filtered.map((b) => [
+      b.id,
+      `"${(b.bidderName || '').replace(/"/g, '""')}"`,
+      b.tenderId,
+      b.status,
+      b.complianceScore,
+      b.riskScore,
+      b.createdAt,
+    ])
+    const csv = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n')
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `GeM_BidVerify_Audit_Trail_${new Date().toISOString().slice(0, 10)}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
 
   return (
     <div className="animate-fade-in w-full">
@@ -45,7 +68,10 @@ export default function VerificationHistoryPage() {
         </div>
         
         <div className="flex items-center gap-3">
-          <button className="px-4 py-2 rounded border border-[#003c8f] text-[#003c8f] text-sm font-semibold flex items-center gap-2 hover:bg-[#e3f2fd] transition-colors bg-white">
+          <button
+            onClick={handleExportCsv}
+            className="px-4 py-2 rounded border border-[#003c8f] text-[#003c8f] text-sm font-semibold flex items-center gap-2 hover:bg-[#e3f2fd] transition-colors bg-white"
+          >
             <ArrowDownToLine size={16} /> Export CSV
           </button>
         </div>
@@ -57,10 +83,10 @@ export default function VerificationHistoryPage() {
           <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input 
             type="text" 
-            placeholder="Search by Bidder Name, Tender ID, or Audit ID..." 
+            placeholder="Search by Bidder Name, Tender ID, GST, or Audit ID..." 
             className="w-full bg-white border border-gray-300 rounded py-2 pl-10 pr-4 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#003c8f] focus:ring-1 focus:ring-[#003c8f] transition-colors"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
         <div className="relative">
@@ -123,14 +149,20 @@ export default function VerificationHistoryPage() {
                         <div className="w-16 h-1.5 bg-gray-200 rounded-full overflow-hidden">
                           <div 
                             className={`h-full rounded-full ${row.complianceScore >= 60 ? 'bg-[#138808]' : 'bg-[#dc3545]'}`} 
-                            style={{ width: `${row.complianceScore}%` }} 
+                            style={{ width: `${Math.max(row.complianceScore, 4)}%` }} 
                           />
                         </div>
                         <span className="text-gray-800 font-bold font-mono text-xs">{row.complianceScore}%</span>
                       </div>
                     </td>
                     <td className="px-4 py-4">
-                      <button className="text-[#003c8f] hover:underline text-xs font-semibold">
+                      <button
+                        onClick={() => {
+                          setSelectedBidId(row.id)
+                          navigate('/risk')
+                        }}
+                        className="text-[#003c8f] hover:underline text-xs font-semibold"
+                      >
                         View
                       </button>
                     </td>

@@ -18,7 +18,7 @@ function formatBytes(bytes) {
 
 export default function UploadBidPage() {
   const navigate = useNavigate()
-  const { setProcessingState } = useUIStore()
+  const { setProcessingState, setSelectedBidId } = useUIStore()
   const fileInputRef = useRef()
   const [dragActive, setDragActive] = useState(false)
   const [files, setFiles] = useState([])
@@ -72,6 +72,9 @@ export default function UploadBidPage() {
         body: formData,
       });
       const data = await response.json();
+      if (data?.bid_id) {
+        setSelectedBidId(data.bid_id);
+      }
       
       setUploadProgress(60);
       setUploadStage('Queuing documents for OCR extraction...');

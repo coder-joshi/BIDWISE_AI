@@ -26,6 +26,11 @@ const getById = async (req, res) => {
   apiResponse.ok(res, "Bid fetched successfully", bid);
 };
 
+const getDashboard = async (req, res) => {
+  const stats = await bidsService.getDashboardStats();
+  apiResponse.ok(res, "Dashboard stats fetched successfully", stats);
+};
+
 const updateStatus = async (req, res) => {
   const bid = await bidsService.updateBidStatus(
     req.params.id,
@@ -36,4 +41,4 @@ const updateStatus = async (req, res) => {
   apiResponse.ok(res, "Bid status updated", bid);
 };
 
-export { upload, getAll, getById, updateStatus };
+export { upload, getAll, getById, getDashboard, updateStatus };

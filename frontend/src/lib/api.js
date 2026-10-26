@@ -1,4 +1,3 @@
-
 import axios from 'axios'
 import { useAuthStore } from '../store/authStore'
 
@@ -58,5 +57,33 @@ api.interceptors.response.use(
 
 export const AI_API_BASE_URL =
   import.meta.env.VITE_AI_API_URL || 'http://localhost:8000'
+
+/**
+ * Dynamically fetches all bids from the backend database (supporting both
+ * the Python AI service response shape and the Node/MongoDB paginated shape)
+ * and resolves the currently selected or latest bid.
+ */
+export async function fetchBidsFromDb(preferredBidId = null) {
+  let bids = []
+  try {
+    const res = await fetch(`${AI_API_BASE_URL}/api/v1/bids/`)
+    const json = await res.json()
+    if (Array.isArray(json?.data)) {
+      bids = json.data
+    } else if (Array.isArray(json?.data?.items)) {
+      bids = json.data.items
+    }
+  } catch {
+    const { data } = await api.get('/bids')
+    bids = Array.isArray(data?.data?.items) ? data.data.items : Array.isArray(data?.data) ? data.data : []
+  }
+
+  const activeBid =
+    (preferredBidId && bids.find((b) => b.id === preferredBidId || b._id === preferredBidId)) ||
+    bids[0] ||
+    null
+
+  return { bids, activeBid }
+}
 
 export default api

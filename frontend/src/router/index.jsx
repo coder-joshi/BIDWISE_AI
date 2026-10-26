@@ -6,6 +6,7 @@ import AppLayout from '../components/layout/AppLayout'
 
 // Public pages
 import LandingPage from '../pages/LandingPage'
+import LegalPage from '../pages/LegalPage'
 import LoginPage from '../pages/auth/LoginPage'
 import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage'
 import RoleSelectionPage from '../pages/auth/RoleSelectionPage'
@@ -40,6 +41,8 @@ function PrivateRoute({ children }) {
 const router = createBrowserRouter([
   // Public
   { path: '/',                element: <LandingPage /> },
+  { path: '/privacy-policy',  element: <LegalPage /> },
+  { path: '/terms-of-use',    element: <LegalPage /> },
   { path: '/login',           element: <LoginPage /> },
   { path: '/forgot-password', element: <ForgotPasswordPage /> },
   { path: '/role-select',     element: <RoleSelectionPage /> },

@@ -1,54 +1,83 @@
 import { useState, useEffect } from 'react'
 import { AlertTriangle, AlertOctagon, Info, ShieldAlert, Activity, Search, Filter, Fingerprint, MapPin } from 'lucide-react'
-import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip } from 'recharts'
-import { AI_API_BASE_URL } from '../../lib/api'
+import { ResponsiveContainer, AreaChart, Area, Tooltip } from 'recharts'
+import { fetchBidsFromDb } from '../../lib/api'
 
 const SEV_CONFIG = {
-  high:   { label: 'High',   color: 'text-[#721c24]',     bg: 'bg-[#f8d7da]',   border: 'border-[#f5c6cb]',   Icon: AlertOctagon },
-  medium: { label: 'Medium', color: 'text-[#856404]',   bg: 'bg-[#fff3cd]', border: 'border-[#ffeeba]', Icon: AlertTriangle },
+  high:   { label: 'High',   color: 'text-[#721c24]', bg: 'bg-[#f8d7da]', border: 'border-[#f5c6cb]', Icon: AlertOctagon },
+  medium: { label: 'Medium', color: 'text-[#856404]', bg: 'bg-[#fff3cd]', border: 'border-[#ffeeba]', Icon: AlertTriangle },
   low:    { label: 'Low',    color: 'text-[#004085]', bg: 'bg-[#cce5ff]', border: 'border-[#b8daff]', Icon: Info },
 }
-
-const mockActivityData = [
-  { time: '08:00', alerts: 0 }, { time: '10:00', alerts: 1 },
-  { time: '12:00', alerts: 3 }, { time: '14:00', alerts: 1 },
-  { time: '16:00', alerts: 4 }, { time: '18:00', alerts: 2 }
-]
 
 export default function FraudDetectionPage() {
   const [alerts, setAlerts] = useState([])
   const [biddersCount, setBiddersCount] = useState(0)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [severityFilter, setSeverityFilter] = useState('all')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch(`${AI_API_BASE_URL}/api/v1/bids/`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === 'success') {
-          const bids = data.data;
-          setBiddersCount(bids.length);
-          
-          // Generate alerts from high risk bids dynamically
-          const generatedAlerts = bids
-            .filter(b => b.riskScore > 50)
-            .map((b, i) => ({
-              id: `FA-${1000 + i}`,
+    fetchBidsFromDb()
+      .then(({ bids }) => {
+        setBiddersCount(bids.length)
+
+        // Collect real fraudAlerts from all bids in database
+        const dbAlerts = []
+        bids.forEach((b, idx) => {
+          if (Array.isArray(b.fraudAlerts) && b.fraudAlerts.length > 0) {
+            b.fraudAlerts.forEach((fa, j) => {
+              dbAlerts.push({
+                id: fa.id || `FA-${1000 + idx * 10 + j}`,
+                bidder: b.bidderName,
+                document: fa.document || 'Submitted_Certificate.pdf',
+                type: fa.type || 'Forensic Anomaly',
+                severity: (fa.severity || 'medium').toLowerCase(),
+                detail: fa.detail || 'Forensic discrepancy detected during verification.',
+                confidence: fa.confidence || b.riskScore || 85,
+              })
+            })
+          } else if ((b.riskScore ?? 0) > 50) {
+            dbAlerts.push({
+              id: `FA-${1000 + idx}`,
               bidder: b.bidderName,
               document: 'Financial_Statement.pdf',
-              type: b.riskScore > 80 ? 'Document Tampering' : 'Identity Mismatch',
+              type: b.riskScore > 80 ? 'Document Tampering' : 'Compliance Mismatch',
               severity: b.riskScore > 80 ? 'high' : 'medium',
-              detail: b.riskScore > 80 ? 'Metadata indicates file was modified after digital signature was applied.' : 'Company registration details do not match the PAN database.',
+              detail: b.aiRecommendation?.summary || 'High risk profile flagged during evaluation.',
               confidence: b.riskScore,
-            }));
-            
-          setAlerts(generatedAlerts);
-        }
+            })
+          }
+        })
+
+        setAlerts(dbAlerts)
       })
       .catch(err => console.error("Failed to fetch bids:", err))
       .finally(() => setLoading(false))
   }, [])
 
+  const filteredAlerts = alerts.filter(a => {
+    const matchText =
+      (a.bidder || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (a.type || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (a.document || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (a.detail || '').toLowerCase().includes(searchQuery.toLowerCase())
+    const matchSev = severityFilter === 'all' || a.severity === severityFilter
+    return matchText && matchSev
+  })
+
   const highAlerts = alerts.filter(a => a.severity === 'high').length
+  const totalAlerts = alerts.length || 1
+  const tamperPct = Math.round((alerts.filter(a => /pdf|tamper|ela|font/i.test(a.type)).length / totalAlerts) * 100) || 45
+  const identityPct = Math.round((alerts.filter(a => /identity|pan|gst|mismatch/i.test(a.type)).length / totalAlerts) * 100) || 30
+  const financialPct = Math.max(0, 100 - tamperPct - identityPct)
+
+  const activityData = [
+    { time: '08:00', alerts: 0 },
+    { time: '10:00', alerts: Math.max(1, Math.floor(alerts.length / 2)) },
+    { time: '12:00', alerts: alerts.length },
+    { time: '14:00', alerts: highAlerts },
+    { time: '16:00', alerts: alerts.length },
+  ]
 
   return (
     <div className="animate-fade-in w-full space-y-6">
@@ -92,25 +121,41 @@ export default function FraudDetectionPage() {
           <div className="bg-[#f8f9fa] border border-gray-200 rounded p-4 flex flex-wrap gap-4 items-center">
             <div className="relative flex-1 min-w-[200px]">
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-              <input type="text" placeholder="Search signals..." className="w-full bg-white border border-gray-300 rounded py-2 pl-9 pr-4 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#003c8f] focus:ring-1 focus:ring-[#003c8f] transition-colors" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search signals by bidder, document, or type..."
+                className="w-full bg-white border border-gray-300 rounded py-2 pl-9 pr-4 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#003c8f] focus:ring-1 focus:ring-[#003c8f] transition-colors"
+              />
             </div>
-            <button className="px-4 py-2 bg-white border border-gray-300 rounded text-sm font-semibold text-gray-700 flex items-center gap-2 hover:bg-gray-50 transition-colors shadow-sm">
-              <Filter size={16} /> Filter
-            </button>
+            <div className="flex items-center gap-2">
+              <Filter size={16} className="text-gray-500" />
+              <select
+                value={severityFilter}
+                onChange={(e) => setSeverityFilter(e.target.value)}
+                className="px-3 py-2 bg-white border border-gray-300 rounded text-sm font-semibold text-gray-700 focus:outline-none focus:border-[#003c8f]"
+              >
+                <option value="all">All Severities</option>
+                <option value="high">High Priority</option>
+                <option value="medium">Medium Priority</option>
+                <option value="low">Low Priority</option>
+              </select>
+            </div>
           </div>
 
           {loading ? (
             <div className="text-center py-10 text-gray-500">Scanning for anomalies...</div>
-          ) : alerts.length === 0 ? (
+          ) : filteredAlerts.length === 0 ? (
             <div className="text-center py-10 text-gray-500">No fraud alerts detected.</div>
           ) : (
-            alerts.map((alert, i) => {
-              const cfg = SEV_CONFIG[alert.severity]
+            filteredAlerts.map((alert) => {
+              const cfg = SEV_CONFIG[alert.severity] || SEV_CONFIG.medium
               const Icon = cfg.Icon
               return (
                 <div 
                   key={alert.id} 
-                  className={`group bg-white border border-gray-200 hover:border-gray-300 rounded p-5 transition-all shadow-sm relative overflow-hidden`}
+                  className="group bg-white border border-gray-200 hover:border-gray-300 rounded p-5 transition-all shadow-sm relative overflow-hidden"
                 >
                   <div className={`absolute top-0 left-0 w-1.5 h-full ${cfg.bg}`} />
                   <div className="flex flex-col sm:flex-row gap-5 items-start pl-2">
@@ -148,7 +193,7 @@ export default function FraudDetectionPage() {
             <h3 className="font-display font-bold text-gray-900 mb-4 m-0">Signal Activity</h3>
             <div className="h-40">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={mockActivityData}>
+                <AreaChart data={activityData}>
                   <defs>
                     <linearGradient id="colorAlerts" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#dc3545" stopOpacity={0.2}/>
@@ -168,23 +213,23 @@ export default function FraudDetectionPage() {
               <div>
                 <div className="flex justify-between text-xs font-body mb-1.5">
                   <span className="text-gray-600 font-semibold">Document Tampering</span>
-                  <span className="text-gray-900 font-bold">45%</span>
+                  <span className="text-gray-900 font-bold">{tamperPct}%</span>
                 </div>
-                <div className="h-2 bg-gray-100 rounded-full overflow-hidden"><div className="h-full bg-[#dc3545] rounded-full" style={{ width: '45%' }}/></div>
+                <div className="h-2 bg-gray-100 rounded-full overflow-hidden"><div className="h-full bg-[#dc3545] rounded-full" style={{ width: `${tamperPct}%` }}/></div>
               </div>
               <div>
                 <div className="flex justify-between text-xs font-body mb-1.5">
-                  <span className="text-gray-600 font-semibold">Identity Mismatch</span>
-                  <span className="text-gray-900 font-bold">30%</span>
+                  <span className="text-gray-600 font-semibold">Identity & Registry Mismatch</span>
+                  <span className="text-gray-900 font-bold">{identityPct}%</span>
                 </div>
-                <div className="h-2 bg-gray-100 rounded-full overflow-hidden"><div className="h-full bg-[#ffc107] rounded-full" style={{ width: '30%' }}/></div>
+                <div className="h-2 bg-gray-100 rounded-full overflow-hidden"><div className="h-full bg-[#ffc107] rounded-full" style={{ width: `${identityPct}%` }}/></div>
               </div>
               <div>
                 <div className="flex justify-between text-xs font-body mb-1.5">
-                  <span className="text-gray-600 font-semibold">Financial Anomalies</span>
-                  <span className="text-gray-900 font-bold">25%</span>
+                  <span className="text-gray-600 font-semibold">Financial & Clause Anomalies</span>
+                  <span className="text-gray-900 font-bold">{financialPct}%</span>
                 </div>
-                <div className="h-2 bg-gray-100 rounded-full overflow-hidden"><div className="h-full bg-[#0d6efd] rounded-full" style={{ width: '25%' }}/></div>
+                <div className="h-2 bg-gray-100 rounded-full overflow-hidden"><div className="h-full bg-[#0d6efd] rounded-full" style={{ width: `${financialPct}%` }}/></div>
               </div>
             </div>
           </div>

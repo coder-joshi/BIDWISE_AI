@@ -1,0 +1,1650 @@
+[
+  {
+    "id": "BID-2026-4964",
+    "bidderName": "Computer Networking Notes for Tech Placements (1)",
+    "tenderId": "GeM/2026/TENDER/005821",
+    "createdAt": "2026-10-26T17:59:37.569847Z",
+    "status": "failed",
+    "riskScore": 94,
+    "complianceScore": 0,
+    "bidderDetails": {
+      "name": "Computer Networking Notes for Tech Placements (1)",
+      "shortName": "Computer Networking",
+      "gst": "Missing",
+      "pan": "Missing",
+      "udyam": "Missing",
+      "cin": "Missing",
+      "turnover": "Not Found",
+      "experience": "Not Found",
+      "state": "Unknown",
+      "gstStatus": "Suspended"
+    },
+    "fraudAlerts": [
+      {
+        "id": "FA-101",
+        "type": "Unrelated / Non-Bid Document",
+        "severity": "high",
+        "document": "Computer Networking Notes for Tech Placements (1).pdf",
+        "detail": "Uploaded document 'Computer Networking Notes for Tech Placements (1).pdf' does not contain government tender compliance data (missing GSTIN, PAN, Udyam, and Financial Turnover certificates). Detected content starts with: \"Computer Networks ● Network : A network is a set of devices that are connected with a physical...\"",
+        "confidence": 97,
+        "bidId": "BID-2026-4964",
+        "bidder": "Computer Networking Notes for Tech Placements (1)"
+      },
+      {
+        "id": "FA-102",
+        "type": "Missing Mandatory Statutory Certificates",
+        "severity": "high",
+        "document": "Computer Networking Notes for Tech Placements (1).pdf",
+        "detail": "0 of 5 mandatory GeM statutory compliance requirements could be verified in 'Computer Networking Notes for Tech Placements (1).pdf'.",
+        "confidence": 96,
+        "bidId": "BID-2026-4964",
+        "bidder": "Computer Networking Notes for Tech Placements (1)"
+      }
+    ],
+    "complianceRequirements": [
+      {
+        "id": "CR-01",
+        "requirement": "GST Registration Certificate",
+        "tenderRequirement": "Valid 15-digit active GSTIN certificate required",
+        "bidderValue": "Not Found in Document",
+        "status": "fail",
+        "aiNote": "No valid 15-digit GSTIN or GST registration certificate found in 'Computer Networking Notes for Tech Placements (1).pdf'."
+      },
+      {
+        "id": "CR-02",
+        "requirement": "PAN & Legal Entity Verification",
+        "tenderRequirement": "Valid 10-character Corporate PAN Card & Entity Registration",
+        "bidderValue": "Not Found in Document",
+        "status": "fail",
+        "aiNote": "No valid Corporate PAN card or legal entity registration found in 'Computer Networking Notes for Tech Placements (1).pdf'."
+      },
+      {
+        "id": "CR-03",
+        "requirement": "Annual Turnover ≥ ₹20 Cr",
+        "tenderRequirement": "Minimum ₹20 Cr average annual turnover over last 3 FYs",
+        "bidderValue": "Not Found in Document",
+        "status": "fail",
+        "aiNote": "No audited financial turnover statement or CA UDIN certificate found in 'Computer Networking Notes for Tech Placements (1).pdf'."
+      },
+      {
+        "id": "CR-04",
+        "requirement": "Public Sector Experience ≥ 5 Years",
+        "tenderRequirement": "Minimum 5 years relevant public sector execution experience",
+        "bidderValue": "Not Found in Document",
+        "status": "fail",
+        "aiNote": "No qualifying project completion certificates or experience records (≥ 5 years) found in 'Computer Networking Notes for Tech Placements (1).pdf'."
+      },
+      {
+        "id": "CR-05",
+        "requirement": "MSME Udyam & ISO 9001:2015 Certification",
+        "tenderRequirement": "Valid Udyam Registration & ISO 9001:2015 Certificate",
+        "bidderValue": "Not Found in Document",
+        "status": "fail",
+        "aiNote": "Neither MSME Udyam registration nor ISO 9001:2015 certificate found in 'Computer Networking Notes for Tech Placements (1).pdf'."
+      }
+    ],
+    "gstNumber": "Missing",
+    "panNumber": "Missing",
+    "udyamNumber": "Missing",
+    "turnover": "Not Found",
+    "experience": "Not Found",
+    "state": "Unknown",
+    "gstStatus": "Suspended",
+    "riskFactors": [
+      {
+        "factor": "Document Authenticity",
+        "weight": 30,
+        "score": 30,
+        "status": "fail",
+        "iconName": "ShieldAlert",
+        "note": "2 forensic anomaly detected: Unrelated / Non-Bid Document on Computer Networking Notes for Tech Placements (1).pdf (Uploaded document 'Computer Networking Notes for Tech Placements (1).pdf' does not contain government tender compliance data (missing GSTIN, PAN, Udyam, and Financial Turnover certificates). Detected content starts with: \"Computer Networks ● Network : A network is a set of devices that are connected with a physical...\")"
+      },
+      {
+        "factor": "GST Compliance",
+        "weight": 20,
+        "score": 18,
+        "status": "fail",
+        "iconName": "AlertTriangle",
+        "note": "GSTIN (Missing) missing or failed GSTN validation."
+      },
+      {
+        "factor": "Financial Stability",
+        "weight": 20,
+        "score": 19,
+        "status": "fail",
+        "iconName": "PieChart",
+        "note": "No audited financial turnover statement or CA UDIN certificate found in 'Computer Networking Notes for Tech Placements (1).pdf'."
+      },
+      {
+        "factor": "Experience Match",
+        "weight": 15,
+        "score": 14,
+        "status": "fail",
+        "iconName": "AlertTriangle",
+        "note": "No qualifying project completion certificates or experience records (≥ 5 years) found in 'Computer Networking Notes for Tech Placements (1).pdf'."
+      },
+      {
+        "factor": "Regulatory Compliance",
+        "weight": 10,
+        "score": 9,
+        "status": "fail",
+        "iconName": "AlertTriangle",
+        "note": "Neither MSME Udyam registration nor ISO 9001:2015 certificate found in 'Computer Networking Notes for Tech Placements (1).pdf'."
+      },
+      {
+        "factor": "DigiLocker Verification",
+        "weight": 5,
+        "score": 4,
+        "status": "warn",
+        "iconName": "AlertTriangle",
+        "note": "Cryptographic signature / PAN–Aadhaar link failed verification."
+      }
+    ],
+    "aiRecommendation": {
+      "verdict": "REJECT",
+      "level": "high",
+      "summary": "Computer Networking Notes for Tech Placements (1) poses a high systemic risk (94/100) with 5 failed requirement(s) and 2 forensic fraud alert(s). Recommended for disqualification under GeM General Terms & Conditions."
+    },
+    "documents": [
+      {
+        "id": "gst",
+        "name": "GST Registration Certificate",
+        "number": "Missing",
+        "issuer": "GSTN Portal",
+        "status": "failed",
+        "extractedOn": "2026-10-26",
+        "validUntil": "Not Found"
+      },
+      {
+        "id": "pan",
+        "name": "PAN Card",
+        "number": "Missing",
+        "issuer": "Income Tax Department",
+        "status": "failed",
+        "extractedOn": "2026-10-26",
+        "validUntil": "Not Found"
+      },
+      {
+        "id": "udyam",
+        "name": "Udyam Registration Certificate",
+        "number": "Missing",
+        "issuer": "Ministry of MSME",
+        "status": "failed",
+        "extractedOn": "2026-10-26",
+        "validUntil": "Not Found"
+      },
+      {
+        "id": "fin",
+        "name": "Audited Financial Turnover Statement",
+        "number": "Not Found",
+        "issuer": "Chartered Accountant / UDIN Registry",
+        "status": "failed",
+        "extractedOn": "2026-10-26",
+        "validUntil": "Not Found"
+      },
+      {
+        "id": "exp",
+        "name": "Project Experience Certificate",
+        "number": "Not Found",
+        "issuer": "Central Public Sector Undertaking",
+        "status": "failed",
+        "extractedOn": "2026-10-26",
+        "validUntil": "Not Found"
+      },
+      {
+        "id": "iso",
+        "name": "ISO 9001:2015 Certificate",
+        "number": "Not Found",
+        "issuer": "TÜV SÜD South Asia / BIS",
+        "status": "failed",
+        "extractedOn": "2026-10-26",
+        "validUntil": "Not Found"
+      }
+    ],
+    "verifications": [
+      {
+        "db": "gstn",
+        "status": "mismatch",
+        "detail": "No valid GSTIN found in uploaded package (Missing).",
+        "timestamp": "2026-10-26 17:59:37"
+      },
+      {
+        "db": "pan",
+        "status": "mismatch",
+        "detail": "No valid Corporate PAN found in uploaded package (Missing).",
+        "timestamp": "2026-10-26 17:59:37"
+      },
+      {
+        "db": "mca21",
+        "status": "mismatch",
+        "detail": "CIN Missing could not be verified — corporate registration documents missing.",
+        "timestamp": "2026-10-26 17:59:37"
+      },
+      {
+        "db": "udyam",
+        "status": "mismatch",
+        "detail": "Neither MSME Udyam registration nor ISO 9001:2015 certificate found in 'Computer Networking Notes for Tech Placements (1).pdf'.",
+        "timestamp": "2026-10-26 17:59:37"
+      },
+      {
+        "db": "epfo",
+        "status": "mismatch",
+        "detail": "EPFO establishment record could not be matched — entity identifiers missing.",
+        "timestamp": "2026-10-26 17:59:37"
+      },
+      {
+        "db": "esic",
+        "status": "mismatch",
+        "detail": "ESIC employer code verification failed — statutory identifiers missing.",
+        "timestamp": "2026-10-26 17:59:37"
+      },
+      {
+        "db": "digilocker",
+        "status": "mismatch",
+        "detail": "Document hash mismatch — Unrelated / Non-Bid Document detected.",
+        "timestamp": "2026-10-26 17:59:37"
+      }
+    ],
+    "annotations": [
+      {
+        "id": "alert-1",
+        "top": "18%",
+        "left": "18%",
+        "width": "62%",
+        "height": "7%",
+        "color": "#dc3545",
+        "type": "mismatch",
+        "note": "Unrelated / Non-Bid Document (Computer Networking Notes for Tech Placements (1).pdf): Uploaded document 'Computer Networking Notes for Tech Placements (1).pdf' does not contain government tender compliance data (missing GSTIN, PAN, Udyam, and Financial Turnover certificates). Detected content starts with: \"Computer Networks ● Network : A network is a set of devices that are connected with a physical...\""
+      },
+      {
+        "id": "alert-2",
+        "top": "34%",
+        "left": "18%",
+        "width": "62%",
+        "height": "7%",
+        "color": "#dc3545",
+        "type": "mismatch",
+        "note": "Missing Mandatory Statutory Certificates (Computer Networking Notes for Tech Placements (1).pdf): 0 of 5 mandatory GeM statutory compliance requirements could be verified in 'Computer Networking Notes for Tech Placements (1).pdf'."
+      },
+      {
+        "id": "req-1",
+        "top": "34%",
+        "left": "12%",
+        "width": "72%",
+        "height": "7%",
+        "color": "#dc3545",
+        "type": "mismatch",
+        "note": "GST Registration Certificate — Not Found in Document: No valid 15-digit GSTIN or GST registration certificate found in 'Computer Networking Notes for Tech Placements (1).pdf'."
+      },
+      {
+        "id": "req-2",
+        "top": "48%",
+        "left": "12%",
+        "width": "72%",
+        "height": "7%",
+        "color": "#dc3545",
+        "type": "mismatch",
+        "note": "PAN & Legal Entity Verification — Not Found in Document: No valid Corporate PAN card or legal entity registration found in 'Computer Networking Notes for Tech Placements (1).pdf'."
+      },
+      {
+        "id": "req-3",
+        "top": "62%",
+        "left": "12%",
+        "width": "72%",
+        "height": "7%",
+        "color": "#dc3545",
+        "type": "mismatch",
+        "note": "Annual Turnover ≥ ₹20 Cr — Not Found in Document: No audited financial turnover statement or CA UDIN certificate found in 'Computer Networking Notes for Tech Placements (1).pdf'."
+      },
+      {
+        "id": "req-4",
+        "top": "76%",
+        "left": "12%",
+        "width": "72%",
+        "height": "7%",
+        "color": "#dc3545",
+        "type": "mismatch",
+        "note": "Public Sector Experience ≥ 5 Years — Not Found in Document: No qualifying project completion certificates or experience records (≥ 5 years) found in 'Computer Networking Notes for Tech Placements (1).pdf'."
+      }
+    ]
+  },
+  {
+    "id": "BID-2026-1024",
+    "bidderName": "26MA3BSDMS (1)",
+    "tenderId": "GeM/2026/TENDER/005821",
+    "createdAt": "2026-10-26T17:46:26.472812Z",
+    "status": "failed",
+    "riskScore": 94,
+    "complianceScore": 0,
+    "bidderDetails": {
+      "name": "26MA3BSDMS (1)",
+      "shortName": "26MA3BSDMS (1)",
+      "gst": "Missing",
+      "pan": "Missing",
+      "udyam": "Missing",
+      "cin": "Missing",
+      "turnover": "Not Found",
+      "experience": "Not Found",
+      "state": "Unknown",
+      "gstStatus": "Suspended"
+    },
+    "fraudAlerts": [
+      {
+        "id": "FA-101",
+        "type": "Unrelated / Non-Bid Document",
+        "severity": "high",
+        "document": "26MA3BSDMS (1).pdf",
+        "detail": "Uploaded document '26MA3BSDMS (1).pdf' does not contain government tender compliance data (missing GSTIN, PAN, Udyam, and Financial Turnover certificates). No procurement text found.",
+        "confidence": 97,
+        "bidId": "BID-2026-1024",
+        "bidder": "26MA3BSDMS (1)"
+      },
+      {
+        "id": "FA-102",
+        "type": "Missing Mandatory Statutory Certificates",
+        "severity": "high",
+        "document": "26MA3BSDMS (1).pdf",
+        "detail": "0 of 5 mandatory GeM statutory compliance requirements could be verified in '26MA3BSDMS (1).pdf'.",
+        "confidence": 96,
+        "bidId": "BID-2026-1024",
+        "bidder": "26MA3BSDMS (1)"
+      }
+    ],
+    "complianceRequirements": [
+      {
+        "id": "CR-01",
+        "requirement": "GST Registration Certificate",
+        "tenderRequirement": "Valid 15-digit active GSTIN certificate required",
+        "bidderValue": "Not Found in Document",
+        "status": "fail",
+        "aiNote": "No valid 15-digit GSTIN or GST registration certificate found in '26MA3BSDMS (1).pdf'."
+      },
+      {
+        "id": "CR-02",
+        "requirement": "PAN & Legal Entity Verification",
+        "tenderRequirement": "Valid 10-character Corporate PAN Card & Entity Registration",
+        "bidderValue": "Not Found in Document",
+        "status": "fail",
+        "aiNote": "No valid Corporate PAN card or legal entity registration found in '26MA3BSDMS (1).pdf'."
+      },
+      {
+        "id": "CR-03",
+        "requirement": "Annual Turnover ≥ ₹20 Cr",
+        "tenderRequirement": "Minimum ₹20 Cr average annual turnover over last 3 FYs",
+        "bidderValue": "Not Found in Document",
+        "status": "fail",
+        "aiNote": "No audited financial turnover statement or CA UDIN certificate found in '26MA3BSDMS (1).pdf'."
+      },
+      {
+        "id": "CR-04",
+        "requirement": "Public Sector Experience ≥ 5 Years",
+        "tenderRequirement": "Minimum 5 years relevant public sector execution experience",
+        "bidderValue": "Not Found in Document",
+        "status": "fail",
+        "aiNote": "No qualifying project completion certificates or experience records (≥ 5 years) found in '26MA3BSDMS (1).pdf'."
+      },
+      {
+        "id": "CR-05",
+        "requirement": "MSME Udyam & ISO 9001:2015 Certification",
+        "tenderRequirement": "Valid Udyam Registration & ISO 9001:2015 Certificate",
+        "bidderValue": "Not Found in Document",
+        "status": "fail",
+        "aiNote": "Neither MSME Udyam registration nor ISO 9001:2015 certificate found in '26MA3BSDMS (1).pdf'."
+      }
+    ],
+    "gstNumber": "Missing",
+    "panNumber": "Missing",
+    "udyamNumber": "Missing",
+    "turnover": "Not Found",
+    "experience": "Not Found",
+    "state": "Unknown",
+    "gstStatus": "Suspended",
+    "riskFactors": [
+      {
+        "factor": "Document Authenticity",
+        "weight": 30,
+        "score": 30,
+        "status": "fail",
+        "iconName": "ShieldAlert",
+        "note": "2 forensic anomaly detected: Unrelated / Non-Bid Document on 26MA3BSDMS (1).pdf (Uploaded document '26MA3BSDMS (1).pdf' does not contain government tender compliance data (missing GSTIN, PAN, Udyam, and Financial Turnover certificates). No procurement text found.)"
+      },
+      {
+        "factor": "GST Compliance",
+        "weight": 20,
+        "score": 18,
+        "status": "fail",
+        "iconName": "AlertTriangle",
+        "note": "GSTIN (Missing) missing or failed GSTN validation."
+      },
+      {
+        "factor": "Financial Stability",
+        "weight": 20,
+        "score": 19,
+        "status": "fail",
+        "iconName": "PieChart",
+        "note": "No audited financial turnover statement or CA UDIN certificate found in '26MA3BSDMS (1).pdf'."
+      },
+      {
+        "factor": "Experience Match",
+        "weight": 15,
+        "score": 14,
+        "status": "fail",
+        "iconName": "AlertTriangle",
+        "note": "No qualifying project completion certificates or experience records (≥ 5 years) found in '26MA3BSDMS (1).pdf'."
+      },
+      {
+        "factor": "Regulatory Compliance",
+        "weight": 10,
+        "score": 9,
+        "status": "fail",
+        "iconName": "AlertTriangle",
+        "note": "Neither MSME Udyam registration nor ISO 9001:2015 certificate found in '26MA3BSDMS (1).pdf'."
+      },
+      {
+        "factor": "DigiLocker Verification",
+        "weight": 5,
+        "score": 4,
+        "status": "warn",
+        "iconName": "AlertTriangle",
+        "note": "Cryptographic signature / PAN–Aadhaar link failed verification."
+      }
+    ],
+    "aiRecommendation": {
+      "verdict": "REJECT",
+      "level": "high",
+      "summary": "26MA3BSDMS (1) poses a high systemic risk (94/100) with 5 failed requirement(s) and 2 forensic fraud alert(s). Recommended for disqualification under GeM General Terms & Conditions."
+    },
+    "documents": [
+      {
+        "id": "gst",
+        "name": "GST Registration Certificate",
+        "number": "Missing",
+        "issuer": "GSTN Portal",
+        "status": "failed",
+        "extractedOn": "2026-10-26",
+        "validUntil": "Not Found"
+      },
+      {
+        "id": "pan",
+        "name": "PAN Card",
+        "number": "Missing",
+        "issuer": "Income Tax Department",
+        "status": "failed",
+        "extractedOn": "2026-10-26",
+        "validUntil": "Not Found"
+      },
+      {
+        "id": "udyam",
+        "name": "Udyam Registration Certificate",
+        "number": "Missing",
+        "issuer": "Ministry of MSME",
+        "status": "failed",
+        "extractedOn": "2026-10-26",
+        "validUntil": "Not Found"
+      },
+      {
+        "id": "fin",
+        "name": "Audited Financial Turnover Statement",
+        "number": "Not Found",
+        "issuer": "Chartered Accountant / UDIN Registry",
+        "status": "failed",
+        "extractedOn": "2026-10-26",
+        "validUntil": "Not Found"
+      },
+      {
+        "id": "exp",
+        "name": "Project Experience Certificate",
+        "number": "Not Found",
+        "issuer": "Central Public Sector Undertaking",
+        "status": "failed",
+        "extractedOn": "2026-10-26",
+        "validUntil": "Not Found"
+      },
+      {
+        "id": "iso",
+        "name": "ISO 9001:2015 Certificate",
+        "number": "Not Found",
+        "issuer": "TÜV SÜD South Asia / BIS",
+        "status": "failed",
+        "extractedOn": "2026-10-26",
+        "validUntil": "Not Found"
+      }
+    ],
+    "verifications": [
+      {
+        "db": "gstn",
+        "status": "mismatch",
+        "detail": "No valid GSTIN found in uploaded package (Missing).",
+        "timestamp": "2026-10-26 17:46:26"
+      },
+      {
+        "db": "pan",
+        "status": "mismatch",
+        "detail": "No valid Corporate PAN found in uploaded package (Missing).",
+        "timestamp": "2026-10-26 17:46:26"
+      },
+      {
+        "db": "mca21",
+        "status": "mismatch",
+        "detail": "CIN Missing could not be verified — corporate registration documents missing.",
+        "timestamp": "2026-10-26 17:46:26"
+      },
+      {
+        "db": "udyam",
+        "status": "mismatch",
+        "detail": "Neither MSME Udyam registration nor ISO 9001:2015 certificate found in '26MA3BSDMS (1).pdf'.",
+        "timestamp": "2026-10-26 17:46:26"
+      },
+      {
+        "db": "epfo",
+        "status": "mismatch",
+        "detail": "EPFO establishment record could not be matched — entity identifiers missing.",
+        "timestamp": "2026-10-26 17:46:26"
+      },
+      {
+        "db": "esic",
+        "status": "mismatch",
+        "detail": "ESIC employer code verification failed — statutory identifiers missing.",
+        "timestamp": "2026-10-26 17:46:26"
+      },
+      {
+        "db": "digilocker",
+        "status": "mismatch",
+        "detail": "Document hash mismatch — Unrelated / Non-Bid Document detected.",
+        "timestamp": "2026-10-26 17:46:26"
+      }
+    ],
+    "annotations": [
+      {
+        "id": "alert-1",
+        "top": "18%",
+        "left": "18%",
+        "width": "62%",
+        "height": "7%",
+        "color": "#dc3545",
+        "type": "mismatch",
+        "note": "Unrelated / Non-Bid Document (26MA3BSDMS (1).pdf): Uploaded document '26MA3BSDMS (1).pdf' does not contain government tender compliance data (missing GSTIN, PAN, Udyam, and Financial Turnover certificates). No procurement text found."
+      },
+      {
+        "id": "alert-2",
+        "top": "34%",
+        "left": "18%",
+        "width": "62%",
+        "height": "7%",
+        "color": "#dc3545",
+        "type": "mismatch",
+        "note": "Missing Mandatory Statutory Certificates (26MA3BSDMS (1).pdf): 0 of 5 mandatory GeM statutory compliance requirements could be verified in '26MA3BSDMS (1).pdf'."
+      },
+      {
+        "id": "req-1",
+        "top": "34%",
+        "left": "12%",
+        "width": "72%",
+        "height": "7%",
+        "color": "#dc3545",
+        "type": "mismatch",
+        "note": "GST Registration Certificate — Not Found in Document: No valid 15-digit GSTIN or GST registration certificate found in '26MA3BSDMS (1).pdf'."
+      },
+      {
+        "id": "req-2",
+        "top": "48%",
+        "left": "12%",
+        "width": "72%",
+        "height": "7%",
+        "color": "#dc3545",
+        "type": "mismatch",
+        "note": "PAN & Legal Entity Verification — Not Found in Document: No valid Corporate PAN card or legal entity registration found in '26MA3BSDMS (1).pdf'."
+      },
+      {
+        "id": "req-3",
+        "top": "62%",
+        "left": "12%",
+        "width": "72%",
+        "height": "7%",
+        "color": "#dc3545",
+        "type": "mismatch",
+        "note": "Annual Turnover ≥ ₹20 Cr — Not Found in Document: No audited financial turnover statement or CA UDIN certificate found in '26MA3BSDMS (1).pdf'."
+      },
+      {
+        "id": "req-4",
+        "top": "76%",
+        "left": "12%",
+        "width": "72%",
+        "height": "7%",
+        "color": "#dc3545",
+        "type": "mismatch",
+        "note": "Public Sector Experience ≥ 5 Years — Not Found in Document: No qualifying project completion certificates or experience records (≥ 5 years) found in '26MA3BSDMS (1).pdf'."
+      }
+    ]
+  },
+  {
+    "id": "BID-2026-0841",
+    "bidderName": "Bharat Engineering Solutions Pvt. Ltd.",
+    "tenderId": "GeM/2026/TENDER/005821",
+    "createdAt": "2026-08-28T10:00:00Z",
+    "status": "verified",
+    "riskScore": 23,
+    "complianceScore": 94,
+    "bidderDetails": {
+      "name": "Bharat Engineering Solutions Pvt. Ltd.",
+      "shortName": "Bharat Engineering",
+      "gst": "27AABCB1234F1Z5",
+      "pan": "AABCB1234F",
+      "udyam": "UDYAM-MH-01-0012345",
+      "cin": "U31200MH2008PTC183921",
+      "turnover": "₹28.4 Cr",
+      "experience": "12 years",
+      "state": "Maharashtra",
+      "gstStatus": "Active"
+    },
+    "fraudAlerts": [],
+    "complianceRequirements": [
+      {
+        "id": "CR-01",
+        "requirement": "GST Registration",
+        "tenderRequirement": "Active GSTIN registered on GSTN Portal",
+        "bidderValue": "27AABCB1234F1Z5 (Active)",
+        "status": "pass",
+        "aiNote": "GST number validated against GSTN portal. Status: Active. No pending returns."
+      },
+      {
+        "id": "CR-02",
+        "requirement": "Annual Turnover ≥ ₹20 Cr",
+        "tenderRequirement": "Minimum average annual turnover of ₹20 Cr across 3 FYs",
+        "bidderValue": "₹28.4 Cr (FY 2024–25)",
+        "status": "pass",
+        "aiNote": "Turnover meets the ₹20 Cr threshold. Audited balance sheet verified."
+      },
+      {
+        "id": "CR-03",
+        "requirement": "Experience ≥ 5 Years",
+        "tenderRequirement": "Minimum 5 years PSU / Government project execution",
+        "bidderValue": "12 Years (since 2014)",
+        "status": "pass",
+        "aiNote": "Company incorporated in 2012. Experience certificates verified for railway projects."
+      },
+      {
+        "id": "CR-04",
+        "requirement": "Make-in-India Class-I Local Content (≥ 50%)",
+        "tenderRequirement": "Minimum 50% local content certification",
+        "bidderValue": "64% Local Content (Class-I)",
+        "status": "pass",
+        "aiNote": "Self-certification and cost-auditor certificate confirm 64% domestic value addition."
+      }
+    ],
+    "gstNumber": "27AABCB1234F1Z5",
+    "panNumber": "AABCB1234F",
+    "udyamNumber": "UDYAM-MH-01-0012345",
+    "turnover": "₹28.4 Cr",
+    "experience": "12 years",
+    "state": "Maharashtra",
+    "gstStatus": "Active",
+    "riskFactors": [
+      {
+        "factor": "Document Authenticity",
+        "weight": 30,
+        "score": 9,
+        "status": "pass",
+        "iconName": "ShieldCheck",
+        "note": "All documents appear genuine. No metadata tampering or ELA anomalies detected."
+      },
+      {
+        "factor": "GST Compliance",
+        "weight": 20,
+        "score": 4,
+        "status": "pass",
+        "iconName": "Activity",
+        "note": "GST 27AABCB1234F1Z5 active in Maharashtra, returns filed, no outstanding dues."
+      },
+      {
+        "factor": "Financial Stability",
+        "weight": 20,
+        "score": 5,
+        "status": "pass",
+        "iconName": "PieChart",
+        "note": "Turnover ₹28.4 Cr meets tender financial threshold. Solvency verified."
+      },
+      {
+        "factor": "Experience Match",
+        "weight": 15,
+        "score": 3,
+        "status": "pass",
+        "iconName": "ShieldCheck",
+        "note": "Project experience (12 years) and technical authorization confirmed."
+      },
+      {
+        "factor": "Regulatory Compliance",
+        "weight": 10,
+        "score": 2,
+        "status": "pass",
+        "iconName": "ShieldCheck",
+        "note": "Udyam (UDYAM-MH-01-0012345), EPFO, and ESIC filings current. No violations found."
+      },
+      {
+        "factor": "DigiLocker Verification",
+        "weight": 5,
+        "score": 0,
+        "status": "warn",
+        "iconName": "AlertTriangle",
+        "note": "PAN–Aadhaar link unconfirmed. Minor risk."
+      }
+    ],
+    "aiRecommendation": {
+      "verdict": "APPROVE",
+      "level": "low",
+      "summary": "Bharat Engineering Solutions Pvt. Ltd. poses a low systemic risk (23/100) with 94% compliance score (4/4 requirements passed). All major compliance constraints are satisfied with high confidence. Recommended for technical qualification."
+    },
+    "documents": [
+      {
+        "id": "gst",
+        "name": "GST Registration Certificate",
+        "number": "27AABCB1234F1Z5",
+        "issuer": "GSTN Portal",
+        "status": "verified",
+        "extractedOn": "2026-08-28",
+        "validUntil": "Perpetual"
+      },
+      {
+        "id": "pan",
+        "name": "PAN Card",
+        "number": "AABCB1234F",
+        "issuer": "Income Tax Department",
+        "status": "verified",
+        "extractedOn": "2026-08-28",
+        "validUntil": "Perpetual"
+      },
+      {
+        "id": "udyam",
+        "name": "Udyam Registration Certificate",
+        "number": "UDYAM-MH-01-0012345",
+        "issuer": "Ministry of MSME",
+        "status": "verified",
+        "extractedOn": "2026-08-28",
+        "validUntil": "Perpetual"
+      },
+      {
+        "id": "fin",
+        "name": "Audited Financial Turnover Statement",
+        "number": "FIN-0841-FY25",
+        "issuer": "Chartered Accountant / UDIN Registry",
+        "status": "verified",
+        "extractedOn": "2026-08-28",
+        "validUntil": "FY 2025-26"
+      },
+      {
+        "id": "exp",
+        "name": "Project Experience Certificate",
+        "number": "EXP-0841",
+        "issuer": "Central Public Sector Undertaking",
+        "status": "verified",
+        "extractedOn": "2026-08-28",
+        "validUntil": "12 years"
+      },
+      {
+        "id": "iso",
+        "name": "ISO 9001:2015 Certificate",
+        "number": "ISO-IND-0841",
+        "issuer": "TÜV SÜD South Asia / BIS",
+        "status": "verified",
+        "extractedOn": "2026-08-28",
+        "validUntil": "Dec 2027"
+      }
+    ],
+    "verifications": [
+      {
+        "db": "gstn",
+        "status": "match",
+        "detail": "GST 27AABCB1234F1Z5 active in Maharashtra. Returns filed. No dues.",
+        "timestamp": "2026-08-28 10:00:00"
+      },
+      {
+        "db": "pan",
+        "status": "match",
+        "detail": "PAN AABCB1234F linked. Entity: Bharat Engineering Solutions Pvt. Ltd..",
+        "timestamp": "2026-08-28 10:00:00"
+      },
+      {
+        "db": "mca21",
+        "status": "match",
+        "detail": "CIN U31200MH2008PTC183921 active. No strikes off.",
+        "timestamp": "2026-08-28 10:00:00"
+      },
+      {
+        "db": "udyam",
+        "status": "match",
+        "detail": "UDYAM-MH-01-0012345 registered on MSME Portal.",
+        "timestamp": "2026-08-28 10:00:00"
+      },
+      {
+        "db": "epfo",
+        "status": "match",
+        "detail": "MA/EST/0841 active. Employees enrolled.",
+        "timestamp": "2026-08-28 10:00:00"
+      },
+      {
+        "db": "esic",
+        "status": "match",
+        "detail": "ES/MA/0841 active. Coverage current.",
+        "timestamp": "2026-08-28 10:00:00"
+      },
+      {
+        "db": "digilocker",
+        "status": "pending",
+        "detail": "DigiLocker fetch pending — PAN–Aadhaar link not confirmed.",
+        "timestamp": "2026-08-28 10:00:00"
+      }
+    ],
+    "annotations": [
+      {
+        "id": "req-1",
+        "top": "34%",
+        "left": "12%",
+        "width": "72%",
+        "height": "7%",
+        "color": "#138808",
+        "type": "verified",
+        "note": "GST Registration — 27AABCB1234F1Z5 (Active): GST number validated against GSTN portal. Status: Active. No pending returns."
+      },
+      {
+        "id": "req-2",
+        "top": "48%",
+        "left": "12%",
+        "width": "72%",
+        "height": "7%",
+        "color": "#138808",
+        "type": "verified",
+        "note": "Annual Turnover ≥ ₹20 Cr — ₹28.4 Cr (FY 2024–25): Turnover meets the ₹20 Cr threshold. Audited balance sheet verified."
+      },
+      {
+        "id": "req-3",
+        "top": "62%",
+        "left": "12%",
+        "width": "72%",
+        "height": "7%",
+        "color": "#138808",
+        "type": "verified",
+        "note": "Experience ≥ 5 Years — 12 Years (since 2014): Company incorporated in 2012. Experience certificates verified for railway projects."
+      },
+      {
+        "id": "req-4",
+        "top": "76%",
+        "left": "12%",
+        "width": "72%",
+        "height": "7%",
+        "color": "#138808",
+        "type": "verified",
+        "note": "Make-in-India Class-I Local Content (≥ 50%) — 64% Local Content (Class-I): Self-certification and cost-auditor certificate confirm 64% domestic value addition."
+      }
+    ]
+  },
+  {
+    "id": "BID-2026-0843",
+    "bidderName": "Rajveer Tech Solutions",
+    "tenderId": "GeM/2026/TENDER/005821",
+    "createdAt": "2026-08-29T14:45:00Z",
+    "status": "failed",
+    "riskScore": 88,
+    "complianceScore": 38,
+    "bidderDetails": {
+      "name": "Rajveer Tech Solutions",
+      "shortName": "Rajveer Tech",
+      "gst": "07AABCR9012H1Z3",
+      "pan": "AABCR9012H",
+      "udyam": "UDYAM-DL-07-0098765",
+      "cin": "U72200DL2019OPC356712",
+      "turnover": "₹9.2 Cr",
+      "experience": "3 years",
+      "state": "Delhi",
+      "gstStatus": "Suspended"
+    },
+    "fraudAlerts": [
+      {
+        "id": "FA-001",
+        "type": "Edited PDF",
+        "severity": "high",
+        "document": "GST Certificate",
+        "detail": "PDF metadata shows content modification after signing.",
+        "confidence": 97,
+        "bidId": "BID-2026-0843",
+        "bidder": "Rajveer Tech Solutions"
+      },
+      {
+        "id": "FA-002",
+        "type": "Font Manipulation",
+        "severity": "high",
+        "document": "PAN Card Copy",
+        "detail": "Inconsistent font embedding detected.",
+        "confidence": 91,
+        "bidId": "BID-2026-0843",
+        "bidder": "Rajveer Tech Solutions"
+      }
+    ],
+    "complianceRequirements": [
+      {
+        "id": "CR-01",
+        "requirement": "GST Registration",
+        "tenderRequirement": "Active GSTIN registered on GSTN Portal",
+        "bidderValue": "07AABCR9012H1Z3",
+        "status": "pass",
+        "aiNote": "GST number found in registry, but PDF certificate shows post-signature edits."
+      },
+      {
+        "id": "CR-02",
+        "requirement": "Annual Turnover ≥ ₹20 Cr",
+        "tenderRequirement": "Minimum average annual turnover of ₹20 Cr across 3 FYs",
+        "bidderValue": "₹9.2 Cr",
+        "status": "fail",
+        "aiNote": "Turnover of ₹9.2 Cr is below the mandatory ₹20 Cr threshold (shortfall of ₹10.8 Cr)."
+      },
+      {
+        "id": "CR-03",
+        "requirement": "Experience ≥ 5 Years",
+        "tenderRequirement": "Minimum 5 years PSU / Government project execution",
+        "bidderValue": "3 Years",
+        "status": "fail",
+        "aiNote": "Experience of 3 years is below the mandatory 5-year requirement."
+      }
+    ],
+    "gstNumber": "07AABCR9012H1Z3",
+    "panNumber": "AABCR9012H",
+    "udyamNumber": "UDYAM-DL-07-0098765",
+    "turnover": "₹9.2 Cr",
+    "experience": "3 years",
+    "state": "Delhi",
+    "gstStatus": "Suspended",
+    "riskFactors": [
+      {
+        "factor": "Document Authenticity",
+        "weight": 30,
+        "score": 30,
+        "status": "fail",
+        "iconName": "ShieldAlert",
+        "note": "2 forensic anomaly detected: Edited PDF on GST Certificate (PDF metadata shows content modification after signing.)"
+      },
+      {
+        "factor": "GST Compliance",
+        "weight": 20,
+        "score": 13,
+        "status": "pass",
+        "iconName": "Activity",
+        "note": "GST 07AABCR9012H1Z3 active in Delhi, returns filed, no outstanding dues."
+      },
+      {
+        "factor": "Financial Stability",
+        "weight": 20,
+        "score": 20,
+        "status": "fail",
+        "iconName": "PieChart",
+        "note": "Turnover of ₹9.2 Cr is below the mandatory ₹20 Cr threshold (shortfall of ₹10.8 Cr)."
+      },
+      {
+        "factor": "Experience Match",
+        "weight": 15,
+        "score": 15,
+        "status": "fail",
+        "iconName": "AlertTriangle",
+        "note": "Experience of 3 years is below the mandatory 5-year requirement."
+      },
+      {
+        "factor": "Regulatory Compliance",
+        "weight": 10,
+        "score": 5,
+        "status": "pass",
+        "iconName": "ShieldCheck",
+        "note": "Udyam (UDYAM-DL-07-0098765), EPFO, and ESIC filings current. No violations found."
+      },
+      {
+        "factor": "DigiLocker Verification",
+        "weight": 5,
+        "score": 5,
+        "status": "warn",
+        "iconName": "AlertTriangle",
+        "note": "Cryptographic signature / PAN–Aadhaar link failed verification."
+      }
+    ],
+    "aiRecommendation": {
+      "verdict": "REJECT",
+      "level": "high",
+      "summary": "Rajveer Tech Solutions poses a high systemic risk (88/100) with 2 failed requirement(s) and 2 forensic fraud alert(s). Recommended for disqualification under GeM General Terms & Conditions."
+    },
+    "documents": [
+      {
+        "id": "gst",
+        "name": "GST Registration Certificate",
+        "number": "07AABCR9012H1Z3",
+        "issuer": "GSTN Portal",
+        "status": "failed",
+        "extractedOn": "2026-08-29",
+        "validUntil": "Tamper Flagged"
+      },
+      {
+        "id": "pan",
+        "name": "PAN Card",
+        "number": "AABCR9012H",
+        "issuer": "Income Tax Department",
+        "status": "failed",
+        "extractedOn": "2026-08-29",
+        "validUntil": "Tamper Flagged"
+      },
+      {
+        "id": "udyam",
+        "name": "Udyam Registration Certificate",
+        "number": "UDYAM-DL-07-0098765",
+        "issuer": "Ministry of MSME",
+        "status": "verified",
+        "extractedOn": "2026-08-29",
+        "validUntil": "Perpetual"
+      },
+      {
+        "id": "fin",
+        "name": "Audited Financial Turnover Statement",
+        "number": "FIN-0843-FY25",
+        "issuer": "Chartered Accountant / UDIN Registry",
+        "status": "failed",
+        "extractedOn": "2026-08-29",
+        "validUntil": "FY 2025-26"
+      },
+      {
+        "id": "exp",
+        "name": "Project Experience Certificate",
+        "number": "EXP-0843",
+        "issuer": "Central Public Sector Undertaking",
+        "status": "failed",
+        "extractedOn": "2026-08-29",
+        "validUntil": "3 years"
+      },
+      {
+        "id": "iso",
+        "name": "ISO 9001:2015 Certificate",
+        "number": "ISO-IND-0843",
+        "issuer": "TÜV SÜD South Asia / BIS",
+        "status": "verified",
+        "extractedOn": "2026-08-29",
+        "validUntil": "Dec 2027"
+      }
+    ],
+    "verifications": [
+      {
+        "db": "gstn",
+        "status": "mismatch",
+        "detail": "GST 07AABCR9012H1Z3 flagged: certificate tampering or inactive status detected.",
+        "timestamp": "2026-08-29 14:45:00"
+      },
+      {
+        "db": "pan",
+        "status": "mismatch",
+        "detail": "PAN AABCR9012H verification failed due to font/document anomaly.",
+        "timestamp": "2026-08-29 14:45:00"
+      },
+      {
+        "db": "mca21",
+        "status": "mismatch",
+        "detail": "CIN U72200DL2019OPC356712 flagged for compliance anomalies.",
+        "timestamp": "2026-08-29 14:45:00"
+      },
+      {
+        "db": "udyam",
+        "status": "match",
+        "detail": "UDYAM-DL-07-0098765 registered on MSME Portal.",
+        "timestamp": "2026-08-29 14:45:00"
+      },
+      {
+        "db": "epfo",
+        "status": "pending",
+        "detail": "EPFO establishment verification pending compliance review.",
+        "timestamp": "2026-08-29 14:45:00"
+      },
+      {
+        "db": "esic",
+        "status": "pending",
+        "detail": "ESIC coverage check pending manual verification.",
+        "timestamp": "2026-08-29 14:45:00"
+      },
+      {
+        "db": "digilocker",
+        "status": "mismatch",
+        "detail": "Document hash mismatch — Edited PDF detected.",
+        "timestamp": "2026-08-29 14:45:00"
+      }
+    ],
+    "annotations": [
+      {
+        "id": "alert-1",
+        "top": "18%",
+        "left": "18%",
+        "width": "62%",
+        "height": "7%",
+        "color": "#dc3545",
+        "type": "mismatch",
+        "note": "Edited PDF (GST Certificate): PDF metadata shows content modification after signing."
+      },
+      {
+        "id": "alert-2",
+        "top": "34%",
+        "left": "18%",
+        "width": "62%",
+        "height": "7%",
+        "color": "#dc3545",
+        "type": "mismatch",
+        "note": "Font Manipulation (PAN Card Copy): Inconsistent font embedding detected."
+      },
+      {
+        "id": "req-1",
+        "top": "34%",
+        "left": "12%",
+        "width": "72%",
+        "height": "7%",
+        "color": "#138808",
+        "type": "verified",
+        "note": "GST Registration — 07AABCR9012H1Z3: GST number found in registry, but PDF certificate shows post-signature edits."
+      },
+      {
+        "id": "req-2",
+        "top": "48%",
+        "left": "12%",
+        "width": "72%",
+        "height": "7%",
+        "color": "#dc3545",
+        "type": "mismatch",
+        "note": "Annual Turnover ≥ ₹20 Cr — ₹9.2 Cr: Turnover of ₹9.2 Cr is below the mandatory ₹20 Cr threshold (shortfall of ₹10.8 Cr)."
+      },
+      {
+        "id": "req-3",
+        "top": "62%",
+        "left": "12%",
+        "width": "72%",
+        "height": "7%",
+        "color": "#dc3545",
+        "type": "mismatch",
+        "note": "Experience ≥ 5 Years — 3 Years: Experience of 3 years is below the mandatory 5-year requirement."
+      }
+    ]
+  },
+  {
+    "id": "BID-2026-0844",
+    "bidderName": "AstraNet Systems Pvt. Ltd.",
+    "tenderId": "GEM/2026/B/5489210",
+    "createdAt": "2026-09-02T11:20:00Z",
+    "status": "verified",
+    "riskScore": 8,
+    "complianceScore": 100,
+    "bidderDetails": {
+      "name": "AstraNet Systems Pvt. Ltd.",
+      "shortName": "AstraNet",
+      "gst": "27AABCA1234F1Z5",
+      "pan": "AABCA1234F",
+      "udyam": "UDYAM-MH-01-0012345",
+      "cin": "U26100MH2011PTC219044",
+      "turnover": "₹34.2 Cr",
+      "experience": "14 years",
+      "state": "Maharashtra",
+      "gstStatus": "Active"
+    },
+    "fraudAlerts": [],
+    "complianceRequirements": [
+      {
+        "id": "ATC-01",
+        "requirement": "Minimum Average Annual Turnover ≥ ₹25 Cr",
+        "tenderRequirement": "Minimum ₹25 Cr over last 3 FYs",
+        "bidderValue": "₹34.2 Cr",
+        "status": "pass",
+        "aiNote": "AstraNet satisfies ATC 01 with ₹34.2 Cr audited average turnover."
+      },
+      {
+        "id": "ATC-02",
+        "requirement": "Make-in-India Class-I Local Content",
+        "tenderRequirement": "Minimum 50% local content",
+        "bidderValue": "Class-I (68%)",
+        "status": "pass",
+        "aiNote": "68% local content verified via OEM certification."
+      },
+      {
+        "id": "ATC-04",
+        "requirement": "MSME Udyam Manufacturing Classification",
+        "tenderRequirement": "Manufacturing NIC code required",
+        "bidderValue": "NIC 26100 (Manufacturing)",
+        "status": "pass",
+        "aiNote": "Registered as Manufacturing entity under NIC 26100."
+      }
+    ],
+    "gstNumber": "27AABCA1234F1Z5",
+    "panNumber": "AABCA1234F",
+    "udyamNumber": "UDYAM-MH-01-0012345",
+    "turnover": "₹34.2 Cr",
+    "experience": "14 years",
+    "state": "Maharashtra",
+    "gstStatus": "Active",
+    "riskFactors": [
+      {
+        "factor": "Document Authenticity",
+        "weight": 30,
+        "score": 3,
+        "status": "pass",
+        "iconName": "ShieldCheck",
+        "note": "All documents appear genuine. No metadata tampering or ELA anomalies detected."
+      },
+      {
+        "factor": "GST Compliance",
+        "weight": 20,
+        "score": 1,
+        "status": "pass",
+        "iconName": "Activity",
+        "note": "GST 27AABCA1234F1Z5 active in Maharashtra, returns filed, no outstanding dues."
+      },
+      {
+        "factor": "Financial Stability",
+        "weight": 20,
+        "score": 2,
+        "status": "pass",
+        "iconName": "PieChart",
+        "note": "Turnover ₹34.2 Cr meets tender financial threshold. Solvency verified."
+      },
+      {
+        "factor": "Experience Match",
+        "weight": 15,
+        "score": 1,
+        "status": "pass",
+        "iconName": "ShieldCheck",
+        "note": "Project experience (14 years) and technical authorization confirmed."
+      },
+      {
+        "factor": "Regulatory Compliance",
+        "weight": 10,
+        "score": 1,
+        "status": "pass",
+        "iconName": "ShieldCheck",
+        "note": "Udyam (UDYAM-MH-01-0012345), EPFO, and ESIC filings current. No violations found."
+      },
+      {
+        "factor": "DigiLocker Verification",
+        "weight": 5,
+        "score": 0,
+        "status": "pass",
+        "iconName": "ShieldCheck",
+        "note": "DigiLocker certificate hash and signature verified."
+      }
+    ],
+    "aiRecommendation": {
+      "verdict": "APPROVE",
+      "level": "low",
+      "summary": "AstraNet Systems Pvt. Ltd. poses a low systemic risk (8/100) with 100% compliance score (3/3 requirements passed). All major compliance constraints are satisfied with high confidence. Recommended for technical qualification."
+    },
+    "documents": [
+      {
+        "id": "gst",
+        "name": "GST Registration Certificate",
+        "number": "27AABCA1234F1Z5",
+        "issuer": "GSTN Portal",
+        "status": "verified",
+        "extractedOn": "2026-09-02",
+        "validUntil": "Perpetual"
+      },
+      {
+        "id": "pan",
+        "name": "PAN Card",
+        "number": "AABCA1234F",
+        "issuer": "Income Tax Department",
+        "status": "verified",
+        "extractedOn": "2026-09-02",
+        "validUntil": "Perpetual"
+      },
+      {
+        "id": "udyam",
+        "name": "Udyam Registration Certificate",
+        "number": "UDYAM-MH-01-0012345",
+        "issuer": "Ministry of MSME",
+        "status": "verified",
+        "extractedOn": "2026-09-02",
+        "validUntil": "Perpetual"
+      },
+      {
+        "id": "fin",
+        "name": "Audited Financial Turnover Statement",
+        "number": "FIN-0844-FY25",
+        "issuer": "Chartered Accountant / UDIN Registry",
+        "status": "verified",
+        "extractedOn": "2026-09-02",
+        "validUntil": "FY 2025-26"
+      },
+      {
+        "id": "exp",
+        "name": "Project Experience Certificate",
+        "number": "EXP-0844",
+        "issuer": "Central Public Sector Undertaking",
+        "status": "verified",
+        "extractedOn": "2026-09-02",
+        "validUntil": "14 years"
+      },
+      {
+        "id": "iso",
+        "name": "ISO 9001:2015 Certificate",
+        "number": "ISO-IND-0844",
+        "issuer": "TÜV SÜD South Asia / BIS",
+        "status": "verified",
+        "extractedOn": "2026-09-02",
+        "validUntil": "Dec 2027"
+      }
+    ],
+    "verifications": [
+      {
+        "db": "gstn",
+        "status": "match",
+        "detail": "GST 27AABCA1234F1Z5 active in Maharashtra. Returns filed. No dues.",
+        "timestamp": "2026-09-02 11:20:00"
+      },
+      {
+        "db": "pan",
+        "status": "match",
+        "detail": "PAN AABCA1234F linked. Entity: AstraNet Systems Pvt. Ltd..",
+        "timestamp": "2026-09-02 11:20:00"
+      },
+      {
+        "db": "mca21",
+        "status": "match",
+        "detail": "CIN U26100MH2011PTC219044 active. No strikes off.",
+        "timestamp": "2026-09-02 11:20:00"
+      },
+      {
+        "db": "udyam",
+        "status": "match",
+        "detail": "UDYAM-MH-01-0012345 registered on MSME Portal.",
+        "timestamp": "2026-09-02 11:20:00"
+      },
+      {
+        "db": "epfo",
+        "status": "match",
+        "detail": "MA/EST/0844 active. Employees enrolled.",
+        "timestamp": "2026-09-02 11:20:00"
+      },
+      {
+        "db": "esic",
+        "status": "match",
+        "detail": "ES/MA/0844 active. Coverage current.",
+        "timestamp": "2026-09-02 11:20:00"
+      },
+      {
+        "db": "digilocker",
+        "status": "match",
+        "detail": "DigiLocker cryptographic hash verified.",
+        "timestamp": "2026-09-02 11:20:00"
+      }
+    ],
+    "annotations": [
+      {
+        "id": "req-1",
+        "top": "34%",
+        "left": "12%",
+        "width": "72%",
+        "height": "7%",
+        "color": "#138808",
+        "type": "verified",
+        "note": "Minimum Average Annual Turnover ≥ ₹25 Cr — ₹34.2 Cr: AstraNet satisfies ATC 01 with ₹34.2 Cr audited average turnover."
+      },
+      {
+        "id": "req-2",
+        "top": "48%",
+        "left": "12%",
+        "width": "72%",
+        "height": "7%",
+        "color": "#138808",
+        "type": "verified",
+        "note": "Make-in-India Class-I Local Content — Class-I (68%): 68% local content verified via OEM certification."
+      },
+      {
+        "id": "req-3",
+        "top": "62%",
+        "left": "12%",
+        "width": "72%",
+        "height": "7%",
+        "color": "#138808",
+        "type": "verified",
+        "note": "MSME Udyam Manufacturing Classification — NIC 26100 (Manufacturing): Registered as Manufacturing entity under NIC 26100."
+      }
+    ]
+  },
+  {
+    "id": "BID-2026-0845",
+    "bidderName": "Shivalik Digitech Innovations",
+    "tenderId": "GEM/2026/B/5489210",
+    "createdAt": "2026-09-03T16:10:00Z",
+    "status": "failed",
+    "riskScore": 89,
+    "complianceScore": 60,
+    "bidderDetails": {
+      "name": "Shivalik Digitech Innovations",
+      "shortName": "Shivalik Digitech",
+      "gst": "24AABCS4567E1Z9",
+      "pan": "AABCS4567E",
+      "udyam": "UDYAM-GJ-04-0045678",
+      "cin": "U31900GJ2018PTC104412",
+      "turnover": "₹26.1 Cr",
+      "experience": "6 years",
+      "state": "Gujarat",
+      "gstStatus": "Suspended"
+    },
+    "fraudAlerts": [
+      {
+        "id": "FA-003",
+        "type": "ELA Image Tampering",
+        "severity": "high",
+        "document": "Shivalik_ISO_Cert.pdf",
+        "detail": "High probability of image tampering detected in ISO 9001:2015 Certificate expiry date region (2027-12-31 vs registry 2024-12-31).",
+        "confidence": 89,
+        "bidId": "BID-2026-0845",
+        "bidder": "Shivalik Digitech Innovations"
+      }
+    ],
+    "complianceRequirements": [
+      {
+        "id": "ATC-01",
+        "requirement": "Minimum Average Annual Turnover ≥ ₹25 Cr",
+        "tenderRequirement": "Minimum ₹25 Cr over last 3 FYs",
+        "bidderValue": "₹26.1 Cr",
+        "status": "pass",
+        "aiNote": "Turnover threshold satisfied."
+      },
+      {
+        "id": "ATC-05",
+        "requirement": "BIS / ISO 9001:2015 Validity",
+        "tenderRequirement": "Valid ISO 9001:2015 on bid closing date",
+        "bidderValue": "Modified Expiry Date (2027-12-31)",
+        "status": "fail",
+        "aiNote": "ELA compression anomaly detected on expiry date; registry shows expired on 2024-12-31."
+      }
+    ],
+    "gstNumber": "24AABCS4567E1Z9",
+    "panNumber": "AABCS4567E",
+    "udyamNumber": "UDYAM-GJ-04-0045678",
+    "turnover": "₹26.1 Cr",
+    "experience": "6 years",
+    "state": "Gujarat",
+    "gstStatus": "Suspended",
+    "riskFactors": [
+      {
+        "factor": "Document Authenticity",
+        "weight": 30,
+        "score": 30,
+        "status": "fail",
+        "iconName": "ShieldAlert",
+        "note": "1 forensic anomaly detected: ELA Image Tampering on Shivalik_ISO_Cert.pdf (High probability of image tampering detected in ISO 9001:2015 Certificate expiry date region (2027-12-31 vs registry 2024-12-31).)"
+      },
+      {
+        "factor": "GST Compliance",
+        "weight": 20,
+        "score": 20,
+        "status": "pass",
+        "iconName": "Activity",
+        "note": "GST 24AABCS4567E1Z9 active in Gujarat, returns filed, no outstanding dues."
+      },
+      {
+        "factor": "Financial Stability",
+        "weight": 20,
+        "score": 14,
+        "status": "pass",
+        "iconName": "PieChart",
+        "note": "Turnover ₹26.1 Cr meets tender financial threshold. Solvency verified."
+      },
+      {
+        "factor": "Experience Match",
+        "weight": 15,
+        "score": 10,
+        "status": "pass",
+        "iconName": "ShieldCheck",
+        "note": "Project experience (6 years) and technical authorization confirmed."
+      },
+      {
+        "factor": "Regulatory Compliance",
+        "weight": 10,
+        "score": 10,
+        "status": "fail",
+        "iconName": "AlertTriangle",
+        "note": "ELA compression anomaly detected on expiry date; registry shows expired on 2024-12-31."
+      },
+      {
+        "factor": "DigiLocker Verification",
+        "weight": 5,
+        "score": 5,
+        "status": "warn",
+        "iconName": "AlertTriangle",
+        "note": "Cryptographic signature / PAN–Aadhaar link failed verification."
+      }
+    ],
+    "aiRecommendation": {
+      "verdict": "REJECT",
+      "level": "high",
+      "summary": "Shivalik Digitech Innovations poses a high systemic risk (89/100) with 1 failed requirement(s) and 1 forensic fraud alert(s). Recommended for disqualification under GeM General Terms & Conditions."
+    },
+    "documents": [
+      {
+        "id": "gst",
+        "name": "GST Registration Certificate",
+        "number": "24AABCS4567E1Z9",
+        "issuer": "GSTN Portal",
+        "status": "verified",
+        "extractedOn": "2026-09-03",
+        "validUntil": "Perpetual"
+      },
+      {
+        "id": "pan",
+        "name": "PAN Card",
+        "number": "AABCS4567E",
+        "issuer": "Income Tax Department",
+        "status": "verified",
+        "extractedOn": "2026-09-03",
+        "validUntil": "Perpetual"
+      },
+      {
+        "id": "udyam",
+        "name": "Udyam Registration Certificate",
+        "number": "UDYAM-GJ-04-0045678",
+        "issuer": "Ministry of MSME",
+        "status": "failed",
+        "extractedOn": "2026-09-03",
+        "validUntil": "Perpetual"
+      },
+      {
+        "id": "fin",
+        "name": "Audited Financial Turnover Statement",
+        "number": "FIN-0845-FY25",
+        "issuer": "Chartered Accountant / UDIN Registry",
+        "status": "verified",
+        "extractedOn": "2026-09-03",
+        "validUntil": "FY 2025-26"
+      },
+      {
+        "id": "exp",
+        "name": "Project Experience Certificate",
+        "number": "EXP-0845",
+        "issuer": "Central Public Sector Undertaking",
+        "status": "verified",
+        "extractedOn": "2026-09-03",
+        "validUntil": "6 years"
+      },
+      {
+        "id": "iso",
+        "name": "ISO 9001:2015 Certificate",
+        "number": "ISO-IND-0845",
+        "issuer": "TÜV SÜD South Asia / BIS",
+        "status": "failed",
+        "extractedOn": "2026-09-03",
+        "validUntil": "Tamper Flagged"
+      }
+    ],
+    "verifications": [
+      {
+        "db": "gstn",
+        "status": "match",
+        "detail": "GST 24AABCS4567E1Z9 active in Gujarat. Returns filed. No dues.",
+        "timestamp": "2026-09-03 16:10:00"
+      },
+      {
+        "db": "pan",
+        "status": "match",
+        "detail": "PAN AABCS4567E linked. Entity: Shivalik Digitech Innovations.",
+        "timestamp": "2026-09-03 16:10:00"
+      },
+      {
+        "db": "mca21",
+        "status": "mismatch",
+        "detail": "CIN U31900GJ2018PTC104412 flagged for compliance anomalies.",
+        "timestamp": "2026-09-03 16:10:00"
+      },
+      {
+        "db": "udyam",
+        "status": "mismatch",
+        "detail": "ELA compression anomaly detected on expiry date; registry shows expired on 2024-12-31.",
+        "timestamp": "2026-09-03 16:10:00"
+      },
+      {
+        "db": "epfo",
+        "status": "match",
+        "detail": "GU/EST/0845 active. Employees enrolled.",
+        "timestamp": "2026-09-03 16:10:00"
+      },
+      {
+        "db": "esic",
+        "status": "match",
+        "detail": "ES/GU/0845 active. Coverage current.",
+        "timestamp": "2026-09-03 16:10:00"
+      },
+      {
+        "db": "digilocker",
+        "status": "mismatch",
+        "detail": "Document hash mismatch — ELA Image Tampering detected.",
+        "timestamp": "2026-09-03 16:10:00"
+      }
+    ],
+    "annotations": [
+      {
+        "id": "alert-1",
+        "top": "18%",
+        "left": "18%",
+        "width": "62%",
+        "height": "7%",
+        "color": "#dc3545",
+        "type": "mismatch",
+        "note": "ELA Image Tampering (Shivalik_ISO_Cert.pdf): High probability of image tampering detected in ISO 9001:2015 Certificate expiry date region (2027-12-31 vs registry 2024-12-31)."
+      },
+      {
+        "id": "req-1",
+        "top": "34%",
+        "left": "12%",
+        "width": "72%",
+        "height": "7%",
+        "color": "#138808",
+        "type": "verified",
+        "note": "Minimum Average Annual Turnover ≥ ₹25 Cr — ₹26.1 Cr: Turnover threshold satisfied."
+      },
+      {
+        "id": "req-2",
+        "top": "48%",
+        "left": "12%",
+        "width": "72%",
+        "height": "7%",
+        "color": "#dc3545",
+        "type": "mismatch",
+        "note": "BIS / ISO 9001:2015 Validity — Modified Expiry Date (2027-12-31): ELA compression anomaly detected on expiry date; registry shows expired on 2024-12-31."
+      }
+    ]
+  }
+]

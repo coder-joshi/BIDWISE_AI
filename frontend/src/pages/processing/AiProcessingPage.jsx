@@ -29,20 +29,13 @@ export default function AiProcessingPage() {
   const hasInvalidFormat = uploadedFiles.some(f => f.toLowerCase().endsWith('.ppt') || f.toLowerCase().endsWith('.pptx'))
 
   useEffect(() => {
-    // Short circuit if already processed
-    if (processingState === 'completed') {
-      setCompleted(true)
-      setCurrentStep(STEPS.length)
-      return
-    }
-    if (processingState === 'failed') {
-      setFailed(true)
-      setErrorMsg(`Verification failed: Expected PDF/DOCX containing valid certificates. Received unsupported format (.ppt).`)
-      return
-    }
-
     let idx = 0
     let timeoutId
+    let redirectId
+    setCompleted(false)
+    setFailed(false)
+    setCurrentStep(0)
+
     const runStep = () => {
       if (idx === 2 && hasInvalidFormat) {
         setFailed(true)
@@ -52,26 +45,29 @@ export default function AiProcessingPage() {
         return
       }
 
-      if (idx >= STEPS.length) { 
+      if (idx >= STEPS.length) {
         setCompleted(true)
         setProcessingState('completed')
-        
+
         // Auto-navigate to history on completion after a brief pause
-        setTimeout(() => {
+        redirectId = setTimeout(() => {
           navigate('/history')
-        }, 1500)
-        
-        return 
+        }, 1200)
+
+        return
       }
-      
+
       setCurrentStep(idx)
       timeoutId = setTimeout(() => { idx++; runStep() }, STEPS[idx]?.duration || 1500)
     }
-    
+
     setProcessingState('processing')
     timeoutId = setTimeout(runStep, 300)
-    return () => clearTimeout(timeoutId)
-  }, [hasInvalidFormat, setProcessingState, processingState, navigate])
+    return () => {
+      clearTimeout(timeoutId)
+      clearTimeout(redirectId)
+    }
+  }, [hasInvalidFormat, setProcessingState, navigate])
 
   const progress = failed ? Math.round((2 / STEPS.length) * 100) : completed ? 100 : Math.round((currentStep / STEPS.length) * 100)
 

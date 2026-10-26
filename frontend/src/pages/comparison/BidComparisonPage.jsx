@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import { CheckCircle2, XCircle, Award, BarChart2, ShieldAlert, Zap } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { StatusBadge } from '../../components/ui/Badge'
-import { AI_API_BASE_URL } from '../../lib/api'
+import { fetchBidsFromDb } from '../../lib/api'
+import { useUIStore } from '../../store/uiStore'
 
 const ROWS = [
   { label: 'Compliance Score', key: 'complianceScore', unit: '/100', icon: CheckCircle2, color: 'text-[#003c8f]' },
@@ -13,12 +15,12 @@ const ROWS = [
 ]
 
 function CellVal({ row, bidder }) {
-  let val = bidder[row.key]
+  const details = bidder.bidderDetails || {}
+  let val = bidder[row.key] || details[row.key]
   
-  // mock missing details for demonstration if they don't exist
   if (row.key === 'gstStatus') val = val || (bidder.riskScore > 60 ? 'Suspended' : 'Active')
-  if (row.key === 'turnover') val = val || (bidder.riskScore > 60 ? '₹12 Cr' : '₹28 Cr')
-  if (row.key === 'experience') val = val || (bidder.riskScore > 60 ? '3 years' : '12 years')
+  if (row.key === 'turnover') val = val || 'N/A'
+  if (row.key === 'experience') val = val || 'N/A'
   if (row.key === 'riskLevel') val = bidder.riskScore <= 30 ? 'Low' : bidder.riskScore <= 60 ? 'Medium' : 'High'
 
   if (row.type === 'risk') {
@@ -38,30 +40,29 @@ function CellVal({ row, bidder }) {
 }
 
 export default function BidComparisonPage() {
+  const navigate = useNavigate()
+  const { setSelectedBidId } = useUIStore()
   const [bidders, setBidders] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch(`${AI_API_BASE_URL}/api/v1/bids/`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === 'success') {
-          // just pick top 3 for comparison
-          setBidders(data.data.slice(0, 3))
-        }
+    fetchBidsFromDb()
+      .then(({ bids }) => {
+        setBidders(bids.slice(0, 4))
       })
       .catch(err => console.error("Failed to fetch bids:", err))
       .finally(() => setLoading(false))
   }, [])
 
-  const winner = bidders.length > 0 ? bidders.reduce((prev, current) => (prev.complianceScore > current.complianceScore) ? prev : current) : null
+  const winner = bidders.length > 0
+    ? bidders.reduce((prev, current) => ((prev.complianceScore - prev.riskScore) > (current.complianceScore - current.riskScore) ? prev : current))
+    : null
 
   if (loading) return <div className="p-10 text-center text-gray-500">Loading bid comparison...</div>
   if (bidders.length === 0) return <div className="p-10 text-center text-red-500">No bids available for comparison</div>
 
   return (
     <div className="animate-fade-in w-full space-y-6">
-      {/* Header */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center border-b border-gray-200 pb-4 gap-4">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-[#e3f2fd] text-[#003c8f] text-xs font-bold mb-2 uppercase tracking-wide">
@@ -69,7 +70,7 @@ export default function BidComparisonPage() {
           </div>
           <h1 className="font-display font-bold text-2xl text-gray-900 tracking-tight m-0">Bid Comparison</h1>
           <p className="text-gray-600 font-body text-sm mt-1 m-0">
-            Multi-vendor analysis for <span className="font-bold text-gray-900 font-mono">GeM/2026/TND-005821</span>
+            Multi-vendor analysis across {bidders.length} active bids
           </p>
         </div>
       </div>
@@ -133,7 +134,17 @@ export default function BidComparisonPage() {
                   return (
                     <td key={b.id} className={`p-6 text-center border-r border-gray-100 last:border-r-0 ${isWinner ? 'bg-[#e3f2fd] border-l border-r border-gray-200' : ''}`}>
                       {isWinner
-                        ? <button className="px-6 py-2.5 rounded bg-[#003c8f] hover:bg-[#002b66] transition-colors text-white font-bold font-body">Proceed with Winner</button>
+                        ? (
+                          <button
+                            onClick={() => {
+                              setSelectedBidId(b.id)
+                              navigate('/report')
+                            }}
+                            className="px-6 py-2.5 rounded bg-[#003c8f] hover:bg-[#002b66] transition-colors text-white font-bold font-body"
+                          >
+                            Proceed with Winner
+                          </button>
+                        )
                         : <span className="inline-flex items-center gap-2 text-gray-500 font-bold text-xs uppercase tracking-widest"><XCircle size={14} /> Disqualified</span>
                       }
                     </td>
