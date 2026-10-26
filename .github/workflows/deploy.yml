@@ -47,13 +47,16 @@ jobs:
         run: npm run build
 
       - name: Setup GitHub Pages
+        if: ${{ github.event.repository.has_pages }}
         uses: actions/configure-pages@v5
 
       - name: Upload Artifact
+        if: ${{ github.event.repository.has_pages }}
         uses: actions/upload-pages-artifact@v3
         with:
           path: 'frontend/dist'
 
       - name: Deploy to GitHub Pages
+        if: ${{ github.event.repository.has_pages }}
         id: deployment
         uses: actions/deploy-pages@v4
