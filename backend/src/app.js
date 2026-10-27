@@ -45,26 +45,36 @@ try {
   console.error("Could not load openapi.yaml for Swagger UI:", err.message);
 }
 
-const defaultOrigins = ["http://localhost:5173", "http://localhost:5174"];
+const defaultOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "https://bidwise-ai-n9dm.vercel.app",
+];
 const envOrigins = (process.env.CORS_ORIGIN || process.env.ALLOWED_ORIGINS || "")
   .split(",")
   .map((origin) => origin.trim())
   .filter(Boolean);
-const allowedOrigins = envOrigins.length > 0 ? envOrigins : defaultOrigins;
+const allowedOrigins = envOrigins.length > 0 ? [...envOrigins, ...defaultOrigins] : defaultOrigins;
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-      return callback(new Error("Not allowed by CORS"));
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow server-to-server requests (no origin) and whitelisted origins
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    // Return a proper 403 instead of throwing, which would cause a 500
+    const err = new Error("Not allowed by CORS");
+    err.status = 403;
+    return callback(err);
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+// Handle preflight requests globally BEFORE any route or rate limiter
+app.options("*", cors(corsOptions));
+app.use(cors(corsOptions));
 
 app.use(generalLimiter);
 app.use(express.json({ limit: "100kb" }));

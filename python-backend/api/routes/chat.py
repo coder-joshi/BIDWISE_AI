@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
 import os
-import google.generativeai as genai
+import requests
 from dotenv import load_dotenv
 from api.routes.bids import load_bids_db
 
@@ -9,8 +9,23 @@ ENV_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__
 load_dotenv(ENV_PATH, override=True)
 
 api_key = os.getenv("GEMINI_API_KEY")
-if api_key:
-    genai.configure(api_key=api_key)
+
+BASE = "https://generativelanguage.googleapis.com/v1beta/models"
+MODELS = [
+    "gemini-3.5-flash",
+    "gemini-3.1-flash-lite",
+    "gemini-flash-lite-latest",
+    "gemini-3-flash-preview",
+]
+
+SYSTEM_CONTEXT = """
+You are BidVerify AI, a government procurement compliance assistant.
+You have access to the following active bids in our system:
+- BID-2026-0841 (Bharat Engineering Solutions): Compliance Score: 94/100, Risk Score: 23 (Low Risk). Status: Verified. No missing docs except pending DigiLocker verification.
+- BID-2026-0843 (Rajveer Tech Solutions): Compliance Score: 38/100, Risk Score: 88 (High Risk). Status: Failed. Reason: Edited PDF detected on GST cert, Font Manipulation on PAN card. Turnover is only 9.2 Cr (minimum is 20 Cr).
+
+Keep your responses concise, professional, and formatted in Markdown.
+"""
 
 router = APIRouter()
 
@@ -19,6 +34,7 @@ class ChatRequest(BaseModel):
     query: str
 
 
+<<<<<<< HEAD
 def build_dynamic_context(bids: list[dict]) -> str:
     lines = [
         "You are BidVerify AI, a government procurement compliance and risk analysis assistant.",
@@ -258,3 +274,31 @@ async def chat_with_ai(req: ChatRequest):
         "status": "success",
         "response": build_fallback_response(req.query, bids),
     }
+=======
+@router.post("/")
+def chat_with_ai(req: ChatRequest):
+    if not api_key:
+        return {"status": "error", "response": "Gemini API key is missing. Add GEMINI_API_KEY to python-backend/.env and restart."}
+
+    body = {
+        "system_instruction": {"parts": [{"text": SYSTEM_CONTEXT}]},
+        "contents": [{"role": "user", "parts": [{"text": req.query}]}],
+    }
+    headers = {"x-goog-api-key": api_key}
+    errors = []
+
+    for model in MODELS:
+        try:
+            r = requests.post(f"{BASE}/{model}:generateContent",
+                              headers=headers, json=body, timeout=(5, 10))
+            if r.status_code == 200:
+                parts = r.json()["candidates"][0]["content"]["parts"]
+                text = "".join(p.get("text", "") for p in parts if not p.get("thought"))
+                if text:
+                    return {"status": "success", "response": text}
+            errors.append(f"{model}: {r.status_code}")
+        except Exception as e:
+            errors.append(f"{model}: {type(e).__name__}")
+
+    return {"status": "error", "response": "Gemini is busy, try again. " + " | ".join(errors)}
+>>>>>>> 42f23ad (fix(cors): resolve express preflight options, python cors fallbacks, and token refresh url)

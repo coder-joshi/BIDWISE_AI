@@ -36,12 +36,16 @@ api.interceptors.response.use(
       original._retry = true
 
       try {
+<<<<<<< HEAD
         const { data } = await axios.post(
           `${API_BASE_URL}/auth/refresh`,
           {},
           { withCredentials: true }
         )
 
+=======
+        const { data } = await api.post('/auth/refresh', {}, { withCredentials: true })
+>>>>>>> 42f23ad (fix(cors): resolve express preflight options, python cors fallbacks, and token refresh url)
         useAuthStore.getState().setAccessToken(data.data.accessToken)
         original.headers.Authorization = `Bearer ${data.data.accessToken}`
 
