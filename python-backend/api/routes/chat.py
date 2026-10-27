@@ -34,7 +34,6 @@ class ChatRequest(BaseModel):
     query: str
 
 
-<<<<<<< HEAD
 def build_dynamic_context(bids: list[dict]) -> str:
     lines = [
         "You are BidVerify AI, a government procurement compliance and risk analysis assistant.",
@@ -274,31 +273,3 @@ async def chat_with_ai(req: ChatRequest):
         "status": "success",
         "response": build_fallback_response(req.query, bids),
     }
-=======
-@router.post("/")
-def chat_with_ai(req: ChatRequest):
-    if not api_key:
-        return {"status": "error", "response": "Gemini API key is missing. Add GEMINI_API_KEY to python-backend/.env and restart."}
-
-    body = {
-        "system_instruction": {"parts": [{"text": SYSTEM_CONTEXT}]},
-        "contents": [{"role": "user", "parts": [{"text": req.query}]}],
-    }
-    headers = {"x-goog-api-key": api_key}
-    errors = []
-
-    for model in MODELS:
-        try:
-            r = requests.post(f"{BASE}/{model}:generateContent",
-                              headers=headers, json=body, timeout=(5, 10))
-            if r.status_code == 200:
-                parts = r.json()["candidates"][0]["content"]["parts"]
-                text = "".join(p.get("text", "") for p in parts if not p.get("thought"))
-                if text:
-                    return {"status": "success", "response": text}
-            errors.append(f"{model}: {r.status_code}")
-        except Exception as e:
-            errors.append(f"{model}: {type(e).__name__}")
-
-    return {"status": "error", "response": "Gemini is busy, try again. " + " | ".join(errors)}
->>>>>>> 42f23ad (fix(cors): resolve express preflight options, python cors fallbacks, and token refresh url)

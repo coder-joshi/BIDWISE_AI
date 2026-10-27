@@ -44,15 +44,10 @@ services:
         value: 3.12.11
       - key: CORS_ORIGINS
         sync: false
-<<<<<<< HEAD
       - key: GEMINI_API_KEY
         sync: false # only needed if this service calls Gemini
 
   # Python FastAPI: Gemini chat (+ bid upload once migrated)
-=======
-
-  # Python AI Chat Microservice
->>>>>>> 42f23ad (fix(cors): resolve express preflight options, python cors fallbacks, and token refresh url)
   - type: web
     name: bidwise-chat
     env: python
@@ -65,14 +60,7 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.9
-<<<<<<< HEAD
       - key: GEMINI_API_KEY
         sync: false
       - key: CORS_ORIGINS
         sync: false # your Vercel URL
-=======
-      - key: CORS_ORIGINS
-        sync: false
-      - key: GEMINI_API_KEY
-        sync: false
->>>>>>> 42f23ad (fix(cors): resolve express preflight options, python cors fallbacks, and token refresh url)
