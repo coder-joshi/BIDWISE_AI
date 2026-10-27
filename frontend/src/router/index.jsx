@@ -74,7 +74,9 @@ const router = createBrowserRouter([
 
   // 404 Catch-all
   { path: '*', element: <NotFoundPage /> },
-])
+], {
+  basename: import.meta.env.BASE_URL,
+})
 
 export default function AppRouter() {
   return <RouterProvider router={router} />
