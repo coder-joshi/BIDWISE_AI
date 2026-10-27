@@ -73,7 +73,7 @@ const corsOptions = {
 };
 
 // Handle preflight requests globally BEFORE any route or rate limiter
-app.options("*", cors(corsOptions));
+
 app.use(cors(corsOptions));
 
 app.use(generalLimiter);
